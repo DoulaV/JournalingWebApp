@@ -54,6 +54,14 @@ const en = {
     private: "This journal is private.",
     linkExpired: "That link has expired. Ask for a new one.",
     failed: "Sign-in didn't work. Please try again.",
+    rateLimited:
+      "Too many sign-in emails in a short time. Wait a few minutes, or use the link in the last email.",
+    haveCode: "Have a sign-in code?",
+    codeHint:
+      "On a device where you're signed in, open Settings and tap \"Show a sign-in code\". Useful for the iPhone Home Screen app, which doesn't share sign-ins with Safari.",
+    codeLabel: "Sign-in code",
+    codeSubmit: "Sign in with code",
+    badCode: "That code didn't work. Codes last about 5 minutes, so get a fresh one and try again.",
   },
   today: {
     greetingMorning: "Good morning",
@@ -272,6 +280,12 @@ const en = {
     addPasskey: "Add a passkey on this device",
     passkeyAdded: "Passkey added.",
     signOut: "Sign out",
+    deviceCode: "Sign in on another device",
+    deviceCodeHint:
+      "Get a short code to sign in the iPhone Home Screen app or another device, without an email.",
+    deviceCodeShow: "Show a sign-in code",
+    deviceCodeValid:
+      'Enter this on the other device\'s sign-in screen, under "Have a sign-in code?". It works for about 5 minutes.',
     habit: "Habit",
     showStreak: "Show streak counter",
     emotionDepth: "Feelings wheel depth",
@@ -431,6 +445,13 @@ const ar: DeepStringify<Dict> = {
     private: "هذه اليوميات خاصة.",
     linkExpired: "انتهت صلاحية الرابط. اطلب رابطًا جديدًا.",
     failed: "لم ينجح الدخول. حاول مرة أخرى.",
+    rateLimited: "طلبت روابط كثيرة في وقت قصير. انتظر بضع دقائق، أو استخدم الرابط في آخر رسالة.",
+    haveCode: "لديك رمز دخول؟",
+    codeHint:
+      'على جهاز سجّلت الدخول فيه، افتح الإعدادات واضغط "أظهر رمز دخول". مفيد لتطبيق الشاشة الرئيسية في iPhone، فهو لا يشارك تسجيل الدخول مع Safari.',
+    codeLabel: "رمز الدخول",
+    codeSubmit: "ادخل بالرمز",
+    badCode: "لم ينجح الرمز. تدوم الرموز نحو 5 دقائق، فاطلب رمزًا جديدًا وحاول مرة أخرى.",
   },
   today: {
     greetingMorning: "صباح الخير",
@@ -647,6 +668,12 @@ const ar: DeepStringify<Dict> = {
     addPasskey: "أضف مفتاح مرور على هذا الجهاز",
     passkeyAdded: "تمت إضافة مفتاح المرور.",
     signOut: "تسجيل الخروج",
+    deviceCode: "الدخول على جهاز آخر",
+    deviceCodeHint:
+      "احصل على رمز قصير لتسجيل الدخول في تطبيق الشاشة الرئيسية في iPhone أو جهاز آخر، دون بريد إلكتروني.",
+    deviceCodeShow: "أظهر رمز دخول",
+    deviceCodeValid:
+      'أدخله في شاشة الدخول على الجهاز الآخر، تحت "لديك رمز دخول؟". يعمل نحو 5 دقائق.',
     habit: "العادة",
     showStreak: "أظهر عدّاد السلسلة",
     emotionDepth: "عمق عجلة المشاعر",
