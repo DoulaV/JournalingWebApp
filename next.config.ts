@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     },
   },
   poweredByHeader: false,
+  devIndicators: false,
   serverExternalPackages: ["web-push"],
   async headers() {
     return [

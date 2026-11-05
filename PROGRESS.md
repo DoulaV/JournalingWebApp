@@ -10,13 +10,13 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - [ ] One message to the user listing exactly what they must do (sent at the end of the session, see "User action needed" in README)
 
 ## Phase 1: MVP, daily writing works
-- [ ] Magic link auth restricted to `ALLOWED_EMAIL`
-- [ ] Tables: profiles, entries, entry_emotions, streaks with RLS
-- [ ] Today page, quick check-in with core-ring emotion picker
-- [ ] Editor with autosave and `dir="auto"`
-- [ ] Entry list and single entry view
-- [ ] Basic streak counter (current, longest, total)
-- [ ] Deployed to Vercel and working on a phone browser
+- [x] Magic link auth restricted to `ALLOWED_EMAIL`
+- [x] Tables: profiles, entries, entry_emotions, streaks with RLS
+- [x] Today page, quick check-in with core-ring emotion picker
+- [x] Editor with autosave and `dir="auto"`
+- [x] Entry list and single entry view
+- [x] Basic streak counter (current, longest, total)
+- [ ] Deployed to Vercel and working on a phone browser (blocked: needs the Supabase and Vercel projects, see README "What you need to do")
 
 ## Phase 2: Habit engine
 - [ ] Full 3-ring emotion picker with recents, "Not sure", intensity, up to 3 emotions, gradual unlock

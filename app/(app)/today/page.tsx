@@ -1,0 +1,114 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getProfileRow, toProfile } from "@/lib/data/profile";
+import { firstEntryDate, getEntriesByDates, getEntryByDate, recentEmotionKeys } from "@/lib/data/entries";
+import { getStreak, unseenMilestones } from "@/lib/data/streaks";
+import { listTags } from "@/lib/data/tags";
+import { promptForToday } from "@/lib/data/prompts";
+import { readyLetterCount } from "@/lib/data/letters";
+import { signAttachments } from "@/lib/data/attachments";
+import { addDays, addMonths, dayOfWeek, formatDate, localHour } from "@/lib/dates";
+import { emotionDepthForDay, journalDayNumber, streakClock } from "@/lib/streak";
+import { getDict, fmt } from "@/lib/i18n";
+import { StreakBadge } from "@/components/streak/streak-badge";
+import { OnThisDay } from "@/components/today/on-this-day";
+import { Celebration } from "@/components/streak/celebration";
+import { TodayClient } from "./today-client";
+import { buttonClass } from "@/components/ui/button";
+import { WEEKLY_REVIEW_PROMPT } from "@/lib/prompts";
+
+export const metadata: Metadata = { title: "Today" };
+
+export default async function TodayPage({ searchParams }: { searchParams: Promise<{ for?: string }> }) {
+  const sp = await searchParams;
+  const row = await getProfileRow();
+  const profile = toProfile(row);
+  const lang = profile.language;
+  const t = getDict(lang);
+  const now = new Date();
+  const { today, yesterday, graceOpen } = streakClock(now, profile.timezone);
+  const hour = localHour(now, profile.timezone);
+
+  const [todayEntry, yesterdayEntry, streak, first, recents, tags, milestones, letters] = await Promise.all([
+    getEntryByDate(today),
+    graceOpen ? getEntryByDate(yesterday) : Promise.resolve(null),
+    getStreak(),
+    firstEntryDate(),
+    recentEmotionKeys(5),
+    listTags(),
+    unseenMilestones(),
+    readyLetterCount(),
+  ]);
+
+  const backfilling = sp.for === "yesterday" && graceOpen && !yesterdayEntry;
+  const date = backfilling ? yesterday : today;
+  const entry = backfilling || !todayEntry ? null : (await signAttachments([todayEntry]))[0];
+  const canBackfill = graceOpen && !yesterdayEntry && !backfilling;
+
+  const depth = emotionDepthForDay(journalDayNumber(first, today), profile.emotionDepthUnlocked);
+  const prompt = entry && !backfilling ? await promptForToday() : null;
+
+  const pastDates = [addDays(today, -7), addMonths(today, -1), addMonths(today, -6), addMonths(today, -12)];
+  const past = await getEntriesByDates(pastDates);
+
+  const greeting = hour < 12 ? t.today.greetingMorning : hour < 17 ? t.today.greetingAfternoon : t.today.greetingEvening;
+  const suggestedRitual = hour < 12 ? "morning" : hour >= 17 ? "evening" : null;
+  const isFriday = dayOfWeek(today) === 5;
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <p className="text-sm text-muted">{formatDate(date, lang)}</p>
+        <h1 className="font-serif text-3xl font-semibold">
+          {profile.displayName ? `${greeting}, ${profile.displayName}` : greeting}
+        </h1>
+        {backfilling && <p className="mt-1 text-sm text-muted">{fmt(t.today.writingFor, { date: formatDate(date, lang) })}</p>}
+      </header>
+
+      {milestones.length > 0 && <Celebration milestone={Math.max(...milestones)} lang={lang} />}
+
+      {canBackfill && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface-2 p-4">
+          <div>
+            <p className="font-medium">{t.today.backfillTitle}</p>
+            <p className="text-sm text-muted">{t.today.backfillHint}</p>
+          </div>
+          <Link href="/today?for=yesterday" className={buttonClass("secondary", "md")}>
+            {t.today.backfillCta}
+          </Link>
+        </div>
+      )}
+
+      {letters > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-accent-soft p-4">
+          <p className="font-medium">{t.today.lettersReady}</p>
+          <Link href="/letters" className={buttonClass("primary", "md")}>
+            {t.today.openLetter}
+          </Link>
+        </div>
+      )}
+
+      <TodayClient
+        key={date}
+        date={date}
+        lang={lang}
+        t={t}
+        entry={entry}
+        depth={depth}
+        recents={recents}
+        tags={tags}
+        bodyCheck={profile.bodyCheckEnabled}
+        fontSize={profile.fontSize}
+        prompt={prompt ? { id: prompt.id, text: prompt[lang] } : null}
+        showPrompts={profile.showPrompts}
+        suggestedRitual={backfilling ? null : suggestedRitual}
+        weeklyPrompt={isFriday && !backfilling ? WEEKLY_REVIEW_PROMPT[lang] : null}
+        isBackfill={backfilling}
+      />
+
+      {profile.showStreak && <StreakBadge streak={streak} t={t.streak} />}
+
+      <OnThisDay entries={past} today={today} lang={lang} t={t} />
+    </div>
+  );
+}
