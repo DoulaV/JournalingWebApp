@@ -7,7 +7,13 @@ function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+export const USER_ID_HEADER = "x-journal-user-id";
+export const USER_EMAIL_HEADER = "x-journal-user-email";
+
 export async function proxy(request: NextRequest) {
+  // Never trust these from the client; only this proxy sets them after verifying the session.
+  request.headers.delete(USER_ID_HEADER);
+  request.headers.delete(USER_EMAIL_HEADER);
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -61,6 +67,17 @@ export async function proxy(request: NextRequest) {
     url.pathname = "/today";
     url.search = "";
     return NextResponse.redirect(url);
+  }
+
+  if (user) {
+    // Pass the verified user to pages so they don't ask the auth server again.
+    // Data access still uses the session cookie, so Row Level Security applies regardless.
+    const headers = new Headers(request.headers);
+    headers.set(USER_ID_HEADER, user.id);
+    headers.set(USER_EMAIL_HEADER, user.email ?? "");
+    const next = NextResponse.next({ request: { headers } });
+    for (const c of response.cookies.getAll()) next.cookies.set(c);
+    return next;
   }
 
   return response;

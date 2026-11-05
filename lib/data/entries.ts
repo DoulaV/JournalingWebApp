@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { serverClient } from "./clients/server";
 import { requireUser } from "./auth";
 import { getProfileRow } from "./profile";
@@ -61,11 +62,12 @@ function toEntry(r: RawEntry): Entry {
   };
 }
 
-export async function getEntryByDate(date: DateStr): Promise<Entry | null> {
+/** Cached per request, so pages and helpers asking for the same day share one query. */
+export const getEntryByDate = cache(async (date: DateStr): Promise<Entry | null> => {
   await requireUser();
   const rows = await fetchRaw((q) => q.eq("entry_date", date).limit(1));
   return rows[0] ? toEntry(rows[0]) : null;
-}
+});
 
 export async function getEntriesByDates(dates: DateStr[]): Promise<Entry[]> {
   await requireUser();

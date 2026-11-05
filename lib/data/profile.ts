@@ -31,7 +31,7 @@ export function toProfile(r: ProfileRow): Profile {
 }
 
 /** Loads the profile, creating it if the signup trigger has not run (defensive). */
-const loadProfileRow = cache(async (userId: string): Promise<ProfileRow> => {
+export const loadProfileRow = cache(async (userId: string): Promise<ProfileRow> => {
   const user = { id: userId };
   const supabase = await serverClient();
   const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle();

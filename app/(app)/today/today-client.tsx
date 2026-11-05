@@ -100,8 +100,12 @@ export function TodayClient(props: Props) {
     [date],
   );
 
+  // Refresh once after the first save so the page knows the entry exists, not on every autosave.
   const onSavedRefresh = useCallback(() => {
-    if (!entryId) router.refresh();
+    if (!entryId) {
+      setEntryId("saved");
+      router.refresh();
+    }
   }, [entryId, router]);
 
   if (mode === "checkin") {
@@ -127,6 +131,7 @@ export function TodayClient(props: Props) {
           setMode("saved");
           router.refresh();
         }}
+        onJustWrite={() => setMode("write")}
       />
     );
   }
@@ -259,6 +264,8 @@ export function TodayClient(props: Props) {
               label={t.checkin.stepTags}
             />
           </div>
+        ) : feelings.emotions.length === 0 && feelings.moodValence == null ? (
+          <p className="text-muted mt-2 text-sm">{t.checkin.addFeelingToCount}</p>
         ) : (
           <FeelingChips
             emotions={feelings.emotions}
