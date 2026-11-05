@@ -12,7 +12,7 @@ async function latestLinkFor(email: string, after: number): Promise<string | nul
       const full = (await (await fetch(`${MAILPIT}/api/v1/message/${msg.ID}`)).json()) as {
         HTML: string;
       };
-      const m = full.HTML.match(/href="([^"]+auth\/confirm[^"]+)"/);
+      const m = full.HTML.match(/href="([^"]+(?:auth\/confirm|auth\/v1\/verify)[^"]*)"/);
       if (m) return m[1].replace(/&amp;/g, "&");
     }
     await new Promise((r) => setTimeout(r, 500));

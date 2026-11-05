@@ -92,4 +92,5 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - The PIN lock check lives in `requireUser()` rather than only in the layout: Next.js renders pages in parallel with layouts, so a layout-only gate would still send page data.
 - Lighthouse performance work kept Recharts (as specified) but loads it lazily with animations off.
 - The owner can't run commands on their laptop, so setup is browser-only: secrets are generated in the build session and handed over privately, the database is created by pasting the migration into the Supabase SQL Editor, and two manual GitHub Actions cover future migrations ("Database migrations") and restores ("Restore from backup").
+- Supabase only lets you edit email templates with custom SMTP, so `/auth/confirm` accepts both the custom `token_hash` link and the default template's PKCE `code` link. The local template now uses the default `{{ .ConfirmationURL }}` so e2e tests the production path.
 - Arabic prompts are written in the first person ("ما الذي كنت أحتاجه") to read naturally and avoid gendered "you".

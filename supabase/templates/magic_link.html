@@ -1,8 +1,4 @@
 <h2>Your journal is ready</h2>
 <p>Tap the link below to sign in. It works once and expires soon.</p>
-<p>
-  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email"
-    >Sign in to your journal</a
-  >
-</p>
+<p><a href="{{ .ConfirmationURL }}">Sign in to your journal</a></p>
 <p>If you didn't ask for this, you can ignore this email.</p>
