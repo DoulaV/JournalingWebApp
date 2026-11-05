@@ -52,19 +52,22 @@ export default async function TodayPage({
 
   const backfilling = sp.for === "yesterday" && graceOpen && !yesterdayEntry;
   const date = backfilling ? yesterday : today;
-  const entry = backfilling || !todayEntry ? null : (await signAttachments([todayEntry]))[0];
   const canBackfill = graceOpen && !yesterdayEntry && !backfilling;
-
   const depth = emotionDepthForDay(journalDayNumber(first, today), profile.emotionDepthUnlocked);
-  const prompt = entry && !backfilling ? await promptForToday() : null;
-
   const pastDates = [
     addDays(today, -7),
     addMonths(today, -1),
     addMonths(today, -6),
     addMonths(today, -12),
   ];
-  const past = await getEntriesByDates(pastDates);
+
+  // Second batch, also in parallel.
+  const [signed, prompt, past] = await Promise.all([
+    backfilling || !todayEntry ? Promise.resolve([null]) : signAttachments([todayEntry]),
+    todayEntry && !backfilling ? promptForToday() : Promise.resolve(null),
+    getEntriesByDates(pastDates),
+  ]);
+  const entry = signed[0];
 
   const greeting =
     hour < 12
@@ -82,12 +85,24 @@ export default async function TodayPage({
         <h1 className="font-serif text-3xl font-semibold">
           {profile.displayName ? `${greeting}, ${profile.displayName}` : greeting}
         </h1>
-        {backfilling && (
-          <p className="text-muted mt-1 text-sm">
-            {fmt(t.today.writingFor, { date: formatDate(date, lang) })}
-          </p>
-        )}
       </header>
+
+      {backfilling && (
+        <div
+          className="bg-accent-soft flex flex-wrap items-center justify-between gap-3 rounded-2xl p-4"
+          data-testid="backfill-banner"
+        >
+          <div>
+            <p className="font-medium">{t.today.writingForYesterday}</p>
+            <p className="text-muted text-sm">
+              {fmt(t.today.writingFor, { date: formatDate(date, lang) })}
+            </p>
+          </div>
+          <Link href="/today" className={buttonClass("secondary", "md")}>
+            {t.today.backToToday}
+          </Link>
+        </div>
+      )}
 
       {milestones.length > 0 && <Celebration milestone={Math.max(...milestones)} lang={lang} />}
 

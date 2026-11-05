@@ -29,6 +29,7 @@ interface Props {
   bodyCheck: boolean;
   ritual: Ritual;
   onSaved: (r: CheckInResult) => void;
+  onJustWrite: () => void;
 }
 
 export function CheckIn({
@@ -41,6 +42,7 @@ export function CheckIn({
   bodyCheck,
   ritual,
   onSaved,
+  onJustWrite,
 }: Props) {
   const [step, setStep] = useState<"feel" | "why">("feel");
   const [value, setValue] = useState<PickerValue>({ emotions: [], moodValence: null });
@@ -89,6 +91,7 @@ export function CheckIn({
           <h2 id="checkin-title" className="font-serif text-2xl font-semibold">
             {t.checkin.stepFeel}
           </h2>
+          <p className="text-muted -mt-3">{t.checkin.startHint}</p>
           <EmotionPicker
             value={value}
             onChange={(v) => {
@@ -110,6 +113,13 @@ export function CheckIn({
             >
               {t.common.next}
             </Button>
+            <button
+              type="button"
+              onClick={onJustWrite}
+              className="text-muted mt-1 min-h-11 w-full text-sm underline underline-offset-4"
+            >
+              {t.checkin.justWrite}
+            </button>
           </div>
         </>
       ) : (

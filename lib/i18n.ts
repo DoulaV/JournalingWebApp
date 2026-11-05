@@ -85,6 +85,8 @@ const en = {
     titlePlaceholder: "A title, if you like",
     editorPlaceholder: "Write whatever is on your mind.",
     writingFor: "Writing for {date}",
+    writingForYesterday: "You're writing yesterday's entry",
+    backToToday: "Back to today",
     emotionsToday: "Feelings",
     editFeelings: "Edit feelings",
     dismissPrompt: "Hide prompt",
@@ -94,6 +96,10 @@ const en = {
   },
   checkin: {
     stepFeel: "What are you feeling?",
+    startHint:
+      "Tap a feeling to start today's entry. Then add a sentence, or write as much as you like.",
+    justWrite: "Skip feelings and just write",
+    addFeelingToCount: "Add a feeling when you're ready, so today counts for your streak.",
     stepWhy: "What's behind this feeling?",
     whyPlaceholder: "One sentence is enough.",
     stepTags: "Which parts of life does this touch?",
@@ -456,6 +462,8 @@ const ar: DeepStringify<Dict> = {
     titlePlaceholder: "عنوان، إن أحببت",
     editorPlaceholder: "اكتب ما يدور في بالك.",
     writingFor: "تكتب ليوم {date}",
+    writingForYesterday: "أنت تكتب تدوينة الأمس",
+    backToToday: "العودة إلى اليوم",
     emotionsToday: "المشاعر",
     editFeelings: "عدّل المشاعر",
     dismissPrompt: "إخفاء السؤال",
@@ -465,6 +473,9 @@ const ar: DeepStringify<Dict> = {
   },
   checkin: {
     stepFeel: "بماذا تشعر؟",
+    startHint: "اختر شعورًا لتبدأ تدوينة اليوم. ثم أضف جملة، أو اكتب ما تشاء.",
+    justWrite: "تخطَّ المشاعر واكتب مباشرة",
+    addFeelingToCount: "أضف شعورًا حين تكون مستعدًا، لتُحسب اليوم في سلسلتك.",
     stepWhy: "ما الذي يقف خلف هذا الشعور؟",
     whyPlaceholder: "جملة واحدة تكفي.",
     stepTags: "أي جوانب حياتك يمسّها هذا؟",

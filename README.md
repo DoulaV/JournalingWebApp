@@ -47,7 +47,8 @@ Only the email in `ALLOWED_EMAIL` can ever create an account. This is enforced i
 
 3. Click **Deploy**. When it's done, copy your address (shown on the project page), go back to Supabase step 1.3 and fill it in. If you didn't know the address when you set `NEXT_PUBLIC_SITE_URL`, update it in Vercel and click **Redeploy**.
 4. In **Settings > Git**, check that the production branch is the branch you merge into (usually `main`).
-5. Vercel Cron runs the nightly streak recompute and the weekly backup automatically (from `vercel.json`).
+5. Speed: in Vercel **Settings > Functions > Function Region**, pick the region closest to your Supabase project's region (shown in Supabase under Project Settings > General). For example Supabase Mumbai (ap-south-1) goes with Vercel Mumbai (bom1), and Supabase Frankfurt (eu-central-1) goes with Vercel Frankfurt (fra1). Then redeploy. Without this, every page waits on a trip between continents.
+6. Vercel Cron runs the nightly streak recompute and the weekly backup automatically (from `vercel.json`).
 
 ### 3. Turn on the 15-minute reminder schedule
 
