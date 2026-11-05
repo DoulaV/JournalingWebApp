@@ -50,7 +50,8 @@ export default async function TodayPage({
       readyLetterCount(),
     ]);
 
-  const backfilling = sp.for === "yesterday" && graceOpen && !yesterdayEntry;
+  // Stays in yesterday mode after saving, so the confirmation and the entry remain on screen.
+  const backfilling = sp.for === "yesterday" && graceOpen;
   const date = backfilling ? yesterday : today;
   const canBackfill = graceOpen && !yesterdayEntry && !backfilling;
   const depth = emotionDepthForDay(journalDayNumber(first, today), profile.emotionDepthUnlocked);
@@ -63,7 +64,13 @@ export default async function TodayPage({
 
   // Second batch, also in parallel.
   const [signed, prompt, past] = await Promise.all([
-    backfilling || !todayEntry ? Promise.resolve([null]) : signAttachments([todayEntry]),
+    backfilling
+      ? yesterdayEntry
+        ? signAttachments([yesterdayEntry])
+        : Promise.resolve([null])
+      : todayEntry
+        ? signAttachments([todayEntry])
+        : Promise.resolve([null]),
     todayEntry && !backfilling ? promptForToday() : Promise.resolve(null),
     getEntriesByDates(pastDates),
   ]);

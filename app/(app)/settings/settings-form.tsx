@@ -7,6 +7,7 @@ import type { Dict } from "@/lib/i18n";
 import { updateSettingsAction, type SettingsPatch } from "./actions";
 import { setPinAction } from "../lock-actions";
 import { backupNowAction } from "./data-actions";
+import { showSignInCodeAction } from "./device-code-actions";
 import { Button, buttonClass } from "@/components/ui/button";
 import { PushSettings } from "./push-settings";
 import { browserClient } from "@/lib/data/clients/browser";
@@ -326,6 +327,7 @@ export function SettingsForm(props: Props) {
             className={`${inputClass} w-28`}
           />
         </Field>
+        <DeviceCode t={t} />
         <PasskeyButton t={t} />
         <form
           action="/auth/signout"
@@ -522,6 +524,40 @@ function Choice({
         ))}
       </div>
     </fieldset>
+  );
+}
+
+function DeviceCode({ t }: { t: Dict }) {
+  const [code, setCode] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-medium">{t.settings.deviceCode}</p>
+      <p className="text-muted text-sm">{t.settings.deviceCodeHint}</p>
+      <Button
+        variant="secondary"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          setCode(await showSignInCodeAction());
+          setBusy(false);
+        }}
+      >
+        {t.settings.deviceCodeShow}
+      </Button>
+      {code && (
+        <div className="bg-surface-2 rounded-xl p-4" aria-live="polite">
+          <p
+            className="text-center font-mono text-2xl tracking-[0.2em]"
+            dir="ltr"
+            data-testid="device-code"
+          >
+            {code}
+          </p>
+          <p className="text-muted mt-2 text-sm">{t.settings.deviceCodeValid}</p>
+        </div>
+      )}
+    </div>
   );
 }
 
