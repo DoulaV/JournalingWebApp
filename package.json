@@ -20,6 +20,7 @@
     "gen:vapid": "node scripts/gen-secrets.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.5.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "@tiptap/extension-placeholder": "^3.32.2",

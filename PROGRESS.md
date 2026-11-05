@@ -46,11 +46,16 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - Known issues: transcription is not exercised in tests (needs a real OpenAI key).
 
 ## Phase 4: Insights and rewards
-- [ ] Emotion trends, triggers, day-of-week charts
-- [ ] Milestones and unlocks
-- [ ] Monthly recap and Friday weekly review
-- [ ] Letters to future you
-- [ ] Therapy export PDF
+- [x] Emotion trends, triggers, day-of-week charts
+- [x] Milestones and unlocks
+- [x] Monthly recap and Friday weekly review
+- [x] Letters to future you
+- [x] Therapy export PDF
+
+### Phase 4 summary
+- Built: insights page with feelings over time (weeks or months, stacked by core, with a table view), life areas and feelings, weekday pleasantness, monthly recap (unlocks at a 30-day streak), Friday weekly review prompt (on Today and Insights), milestones page with every unlock, calm milestone dialog (soft glow, no confetti), Dusk palette at 7 days, letters at 50 days (sealed by RLS until their date, push when they open), day one next to today at 100 days, year review at 365, and a one-page therapy summary where the user picks which excerpts print.
+- Tested: Playwright for charts and table view, the 7-day celebration and Dusk unlock, recap and letters with a 55-day history including sealing and opening, 100-day look back, and the summary printing only chosen excerpts.
+- Known issues: the spec's Angry and Fearful colors are almost identical (and fail colorblind checks). They are kept as specified, never stacked next to each other in charts, and every chart has a legend, labeled tooltips and text values.
 
 ## Phase 5: Hardening and polish
 - [ ] PIN lock with inactivity timeout

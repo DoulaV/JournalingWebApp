@@ -106,7 +106,11 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
         isBackfill={backfilling}
       />
 
-      {profile.showStreak && <StreakBadge streak={streak} t={t.streak} />}
+      {profile.showStreak && (
+        <Link href="/milestones" className="block rounded-2xl">
+          <StreakBadge streak={streak} t={t.streak} />
+        </Link>
+      )}
 
       <OnThisDay entries={past} today={today} lang={lang} t={t} />
     </div>

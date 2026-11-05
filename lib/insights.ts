@@ -12,6 +12,13 @@ export interface InsightEntry {
   wordCount?: number;
 }
 
+/**
+ * Stacking order for charts. The spec's Angry and Fearful colors are nearly
+ * identical, so they are never placed next to each other (validated for
+ * colorblind separation). Charts also carry legends, tooltips and a table view.
+ */
+export const CHART_ORDER: CoreId[] = ["happy", "surprised", "bad", "sad", "fearful", "disgusted", "angry"];
+
 /** How pleasant each core feeling is, from -1 (hard) to 1 (pleasant). */
 export const CORE_VALENCE: Record<CoreId, number> = {
   happy: 1,
