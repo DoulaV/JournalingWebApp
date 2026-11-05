@@ -19,14 +19,7 @@ You will paste three secret values: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVA
 1. In Supabase, **New project**. Pick a region near you (for example Frankfurt or Mumbai for Dubai) and save the database password somewhere safe.
 2. Set up the database: open [`supabase/migrations/20261105000000_init.sql`](supabase/migrations/20261105000000_init.sql) on GitHub, click **Copy raw file** (the copy icon above the file), then in Supabase open **SQL Editor > New query**, paste, and click **Run**. It should finish with "Success. No rows returned". This creates every table, the Row Level Security policies, search, and the private `attachments` and `backups` storage buckets.
 3. **Authentication > URL Configuration**: set Site URL to your Vercel address (for example `https://my-journal.vercel.app`) and add `https://my-journal.vercel.app/auth/confirm` to Redirect URLs. You get the exact address in step 2; come back and fill it in then.
-4. **Authentication > Email Templates > Magic Link**: replace the template body with:
-
-   ```html
-   <h2>Your journal is ready</h2>
-   <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Sign in to your journal</a></p>
-   <p>If you didn't ask for this, you can ignore this email.</p>
-   ```
-
+4. Email template: nothing to do. The app works with Supabase's default sign-in email. (Editing templates needs your own email service, which is optional, see 7.) Open the sign-in link on the same phone or browser where you asked for it.
 5. Passkeys (optional, for Face ID or fingerprint sign-in): if your Supabase dashboard shows a **Passkeys** option under Authentication, turn it on and set the relying party ID to your domain (for example `my-journal.vercel.app`) and the origin to `https://my-journal.vercel.app`. Magic links work without this.
 6. **Project Settings > API** (or **API Keys**): copy the Project URL, the `anon` public key and the `service_role` key for step 2.
 7. Optional: Supabase's built-in email sender allows only a few emails per hour. That's enough for signing in now and then. For more, add your own SMTP under **Authentication > Emails**.
