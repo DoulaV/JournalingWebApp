@@ -5,6 +5,7 @@ import { computeStreak, type StreakState } from "@/lib/streak";
 import { isValidEntry } from "./entry-utils";
 import { serverClient } from "./clients/server";
 import { requireUser } from "./auth";
+import { getProfileRow } from "./profile";
 
 type Client = SupabaseClient<Database>;
 
@@ -86,17 +87,14 @@ export interface StreakSummary {
   atRisk: boolean;
 }
 
+/** Live streak for display, computed from history (the stored row is updated on save and nightly). */
 export async function getStreak(): Promise<StreakSummary> {
   const user = await requireUser();
+  const profile = await getProfileRow();
   const supabase = await serverClient();
-  const { data } = await supabase.from("streaks").select("*").eq("user_id", user.id).maybeSingle();
-  return {
-    current: data?.current_length ?? 0,
-    longest: data?.longest_length ?? 0,
-    total: data?.total_days_written ?? 0,
-    freezes: data?.freezes_available ?? 0,
-    atRisk: data?.at_risk ?? false,
-  };
+  const dates = await validEntryDates(supabase, user.id);
+  const s = computeStreak({ writtenDates: dates, now: new Date(), timeZone: profile.timezone });
+  return { current: s.current, longest: s.longest, total: s.total, freezes: s.freezes, atRisk: s.atRisk };
 }
 
 /** Milestone events not yet celebrated. */

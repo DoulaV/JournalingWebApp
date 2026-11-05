@@ -40,6 +40,8 @@ export default defineConfig({
     command: useBuild ? `pnpm build && pnpm start -p ${PORT}` : `pnpm dev -p ${PORT}`,
     url: `http://localhost:${PORT}/login`,
     reuseExistingServer: !process.env.CI,
+    // Trust the test-only certificate used by the mock push service in e2e/push.spec.ts.
+    env: { NODE_EXTRA_CA_CERTS: "e2e/fixtures/localhost.crt" },
     timeout: 300_000,
   },
 });

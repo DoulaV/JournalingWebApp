@@ -19,14 +19,19 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - [ ] Deployed to Vercel and working on a phone browser (blocked: needs the Supabase and Vercel projects, see README "What you need to do")
 
 ## Phase 2: Habit engine
-- [ ] Full 3-ring emotion picker with recents, "Not sure", intensity, up to 3 emotions, gradual unlock
-- [ ] Full streak engine with grace, freezes, at-risk, reset, all unit tests passing
-- [ ] Tags
-- [ ] Prompts with no-repeat rule
-- [ ] PWA: installable, offline drafts with sync
-- [ ] Web Push reminders with cron and follow-up nudge
-- [ ] Morning and evening rituals
-- [ ] Dark mode, font size, Arabic UI with RTL
+- [x] Full 3-ring emotion picker with recents, "Not sure", intensity, up to 3 emotions, gradual unlock
+- [x] Full streak engine with grace, freezes, at-risk, reset, all unit tests passing
+- [x] Tags
+- [x] Prompts with no-repeat rule
+- [x] PWA: installable, offline drafts with sync
+- [x] Web Push reminders with cron and follow-up nudge
+- [x] Morning and evening rituals
+- [x] Dark mode, font size, Arabic UI with RTL
+
+### Phase 1 and 2 summary
+- Built: owner-only magic link and passkey sign-in, full schema with RLS, quick check-in (feelings, one line, tags), TipTap editor with 3-second autosave, IndexedDB offline drafts that sync on reconnect, per-paragraph `dir="auto"`, focus mode and font size, entry list and entry view, live streak engine, three-ring picker with recents, "Not sure", intensity, up to three feelings and gradual unlock, prompts with the 14-day no-repeat rule, morning and evening rituals, settings (theme, palette, font, Arabic RTL, reminders, PIN, passkeys, features, data), service worker and manifest, Web Push with reminder and nudge cron.
+- Tested: 69 unit tests (streak engine incl. grace, freezes, cap, at-risk recovery and reset, midnight, travel, DST and DST-free zones; reminders incl. 2-a-day cap and DST; i18n parity; entry rules; prompts; emotions). Playwright at 390px: check-in in under 60 seconds with an Arabic paragraph, Not sure, three-ring picker, core-only week one, offline draft sync, streak with a rest day, rituals, dark mode and Arabic RTL with no horizontal scroll, real magic link email, allow-list refusal, cron auth, and Web Push delivery to a local mock push service.
+- Known issues: headless Chromium can't create real push subscriptions, so delivery to a real phone is verified only after deploy (the Settings page has "Send a test notification"). Vercel Hobby only runs daily crons, so the 15-minute reminder schedule runs from GitHub Actions (`.github/workflows/reminders.yml`).
 
 ## Phase 3: Looking back
 - [ ] Calendar view colored by emotion
@@ -62,4 +67,9 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - The streak is recomputed from full history each time (pure function), so nightly cron and save-time updates always agree.
 - Added `prompt_history` table (for the 14-day no-repeat rule), `ai_reflections` table, and `NEXT_PUBLIC_SITE_URL` + `VAPID_SUBJECT` env vars.
 - Letters are sealed in the database: RLS hides rows until `sealed_until`, and `letters_overview()` lists sealed letters without their content.
+- Reminders every 15 minutes run from a GitHub Actions schedule, because Vercel Hobby rejects crons more frequent than daily. Vercel Cron runs the nightly streak recompute (08:10 UTC, just after the Dubai grace period closes) and the weekly backup. On Vercel Pro, the reminders cron can move into `vercel.json`.
+- The service worker caches only `/today` (plus static assets) for offline writing, and clears its caches on sign out.
+- The PIN lock is enforced on the server: without a valid signed unlock cookie the app layout renders only the lock screen, so entry content is never sent to a locked browser.
+- The displayed streak is computed live from history on each view; the stored `streaks` row is refreshed on save and nightly.
+- PDF export uses a print-optimized page and the browser's "Save as PDF", which renders Arabic shaping correctly (server PDF libraries handle Arabic poorly).
 - Arabic prompts are written in the first person ("ما الذي كنت أحتاجه") to read naturally and avoid gendered "you".

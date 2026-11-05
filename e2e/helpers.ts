@@ -97,3 +97,9 @@ export function dubaiToday(offsetDays = 0): string {
   const d = new Date(Date.now() + offsetDays * 86_400_000);
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dubai" }).format(d);
 }
+
+export function addDaysStr(date: string, n: number): string {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}

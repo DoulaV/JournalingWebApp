@@ -74,7 +74,7 @@ create table public.profiles (
   morning_reminder_time time not null default '08:00',
   notifications_sent_on date,
   notifications_sent_count smallint not null default 0,
-  last_reminder_kind text,
+  notifications_sent_kinds text,
   -- feature flags (anything that sends text to an AI service is off by default)
   transcription_enabled boolean not null default false,
   ai_reflection_enabled boolean not null default false,

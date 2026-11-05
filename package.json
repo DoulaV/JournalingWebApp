@@ -16,7 +16,7 @@
     "db:start": "supabase start -x vector,imgproxy,supavisor,postgres-meta",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local > lib/data/database.types.ts",
+    "db:types": "supabase gen types typescript > lib/data/database.types.ts",
     "gen:vapid": "node scripts/gen-secrets.mjs"
   },
   "dependencies": {
