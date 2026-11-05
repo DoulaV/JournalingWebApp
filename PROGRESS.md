@@ -91,4 +91,5 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - PDF export uses a print-optimized page and the browser's "Save as PDF", which renders Arabic shaping correctly (server PDF libraries handle Arabic poorly).
 - The PIN lock check lives in `requireUser()` rather than only in the layout: Next.js renders pages in parallel with layouts, so a layout-only gate would still send page data.
 - Lighthouse performance work kept Recharts (as specified) but loads it lazily with animations off.
+- The owner can't run commands on their laptop, so setup is browser-only: secrets are generated in the build session and handed over privately, the database is created by pasting the migration into the Supabase SQL Editor, and two manual GitHub Actions cover future migrations ("Database migrations") and restores ("Restore from backup").
 - Arabic prompts are written in the first person ("ما الذي كنت أحتاجه") to read naturally and avoid gendered "you".

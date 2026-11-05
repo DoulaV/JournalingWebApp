@@ -1,0 +1,30 @@
+# Restores your journal from the newest backup in the Supabase "backups" bucket.
+# Run it by hand: Actions tab > Restore from backup > Run workflow.
+# Needs repository secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ALLOWED_EMAIL.
+name: Restore from backup
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "restore" to confirm'
+        required: true
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm == 'restore' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Restore newest backup
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ALLOWED_EMAIL: ${{ secrets.ALLOWED_EMAIL }}
+        run: node scripts/restore.mjs --latest

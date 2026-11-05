@@ -10,58 +10,33 @@ Built with Next.js 16 (App Router, TypeScript), Tailwind CSS 4, TipTap, Supabase
 
 ## What you need to do (first deploy)
 
-You need three free accounts: GitHub (you have it), [Supabase](https://supabase.com) and [Vercel](https://vercel.com). Allow about 20 minutes.
+Everything below happens in a web browser. No command line, no installing anything. You need three free accounts: GitHub (you have it), [Supabase](https://supabase.com) and [Vercel](https://vercel.com). Allow about 20 minutes.
 
-### 1. Generate your secrets
+You will paste three secret values: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `CRON_SECRET`. They were generated for you and sent separately (never commit them). To make new ones later, run the "Generate secrets" steps at the end of this file on any machine that allows it, or ask for them to be generated again.
 
-On your computer, in this repository:
+### 1. Create the Supabase project and database
 
-```bash
-pnpm install
-```
-
-```bash
-pnpm gen:vapid
-```
-
-This prints `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `CRON_SECRET`. Keep them for step 3. They are random values that only you have; never commit them.
-
-### 2. Create the Supabase project
-
-1. In Supabase, create a new project (pick a region near you, for example Frankfurt or Mumbai for Dubai). Save the database password.
-2. Apply the database schema from your computer:
-
-   ```bash
-   pnpm exec supabase login
-   ```
-
-   ```bash
-   pnpm exec supabase link --project-ref YOUR_PROJECT_REF
-   ```
-
-   ```bash
-   pnpm exec supabase db push
-   ```
-
-   The project ref is the part of the project URL after `/project/`. `db push` creates every table, the Row Level Security policies, search, and the private `attachments` and `backups` storage buckets.
-3. **Authentication > URL Configuration**: set Site URL to your Vercel URL (for example `https://my-journal.vercel.app`) and add `https://my-journal.vercel.app/auth/confirm` to Redirect URLs. You will know the exact URL after step 3; come back and update it.
-4. **Authentication > Email Templates > Magic Link**: replace the link in the template with:
+1. In Supabase, **New project**. Pick a region near you (for example Frankfurt or Mumbai for Dubai) and save the database password somewhere safe.
+2. Set up the database: open [`supabase/migrations/20261105000000_init.sql`](supabase/migrations/20261105000000_init.sql) on GitHub, click **Copy raw file** (the copy icon above the file), then in Supabase open **SQL Editor > New query**, paste, and click **Run**. It should finish with "Success. No rows returned". This creates every table, the Row Level Security policies, search, and the private `attachments` and `backups` storage buckets.
+3. **Authentication > URL Configuration**: set Site URL to your Vercel address (for example `https://my-journal.vercel.app`) and add `https://my-journal.vercel.app/auth/confirm` to Redirect URLs. You get the exact address in step 2; come back and fill it in then.
+4. **Authentication > Email Templates > Magic Link**: replace the template body with:
 
    ```html
-   <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Sign in to your journal</a>
+   <h2>Your journal is ready</h2>
+   <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Sign in to your journal</a></p>
+   <p>If you didn't ask for this, you can ignore this email.</p>
    ```
 
-   (The same template is in `supabase/templates/magic_link.html`.)
-5. **Authentication > Sign In / Providers > Passkeys** (if shown): turn passkeys on, and set the WebAuthn relying party ID to your domain (for example `my-journal.vercel.app`) and the origin to `https://my-journal.vercel.app`.
-6. **Project Settings > API**: copy the Project URL, the `anon` public key and the `service_role` key for step 3.
-7. Optional but recommended: Supabase's built-in email sender is rate limited (a few emails per hour). Magic links are only needed now and then, but if you want more, add your own SMTP under **Authentication > Emails**.
+5. Passkeys (optional, for Face ID or fingerprint sign-in): if your Supabase dashboard shows a **Passkeys** option under Authentication, turn it on and set the relying party ID to your domain (for example `my-journal.vercel.app`) and the origin to `https://my-journal.vercel.app`. Magic links work without this.
+6. **Project Settings > API** (or **API Keys**): copy the Project URL, the `anon` public key and the `service_role` key for step 2.
+7. Optional: Supabase's built-in email sender allows only a few emails per hour. That's enough for signing in now and then. For more, add your own SMTP under **Authentication > Emails**.
 
 Only the email in `ALLOWED_EMAIL` can ever create an account. This is enforced in the app and inside the database itself, so nobody else can sign up even with your public keys.
 
-### 3. Create the Vercel project
+### 2. Create the Vercel project
 
-1. In Vercel, **Add New > Project**, import this GitHub repository. Framework preset: Next.js. Build settings: defaults.
-2. Add these environment variables (Production and Preview):
+1. In Vercel, **Add New > Project**, import this GitHub repository. Leave the build settings as they are.
+2. Before deploying, open **Environment Variables** and add:
 
    | Name | Value |
    |---|---|
@@ -69,45 +44,52 @@ Only the email in `ALLOWED_EMAIL` can ever create an account. This is enforced i
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
    | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service_role key (secret) |
    | `ALLOWED_EMAIL` | the one email that may sign in |
-   | `NEXT_PUBLIC_SITE_URL` | your Vercel URL, for example `https://my-journal.vercel.app` |
-   | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | from `pnpm gen:vapid` |
-   | `VAPID_PRIVATE_KEY` | from `pnpm gen:vapid` (secret) |
-   | `VAPID_SUBJECT` | `mailto:` plus your email |
-   | `CRON_SECRET` | from `pnpm gen:vapid` (secret) |
+   | `NEXT_PUBLIC_SITE_URL` | your Vercel address, for example `https://my-journal.vercel.app` |
+   | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | from your secrets |
+   | `VAPID_PRIVATE_KEY` | from your secrets |
+   | `VAPID_SUBJECT` | `mailto:` followed by your email |
+   | `CRON_SECRET` | from your secrets |
    | `OPENAI_API_KEY` | optional, enables voice note transcription |
    | `ANTHROPIC_API_KEY` | optional, enables the AI weekly reflection |
 
-3. Deploy. In **Settings > Git**, make sure the production branch is the branch you merge into (usually `main`).
-4. Vercel Cron runs two daily-or-slower jobs from `vercel.json`: the nightly streak recompute and the weekly backup. They use `CRON_SECRET` automatically.
+3. Click **Deploy**. When it's done, copy your address (shown on the project page), go back to Supabase step 1.3 and fill it in. If you didn't know the address when you set `NEXT_PUBLIC_SITE_URL`, update it in Vercel and click **Redeploy**.
+4. In **Settings > Git**, check that the production branch is the branch you merge into (usually `main`).
+5. Vercel Cron runs the nightly streak recompute and the weekly backup automatically (from `vercel.json`).
 
-### 4. Turn on the 15-minute reminder schedule
+### 3. Turn on the 15-minute reminder schedule
 
-Vercel's free plan only runs cron jobs once a day, so reminders are triggered by GitHub Actions instead (`.github/workflows/reminders.yml`). In GitHub, **Settings > Secrets and variables > Actions > New repository secret**, add:
+Vercel's free plan only runs scheduled jobs once a day, so reminders are triggered by GitHub Actions instead. In this GitHub repository, **Settings > Secrets and variables > Actions > New repository secret**, add:
 
-- `APP_URL`: your Vercel URL, no trailing slash
-- `CRON_SECRET`: the same value as in Vercel
+- `APP_URL`: your Vercel address, with no slash at the end
+- `CRON_SECRET`: the same value you gave Vercel
 
-GitHub runs it every 15 minutes (sometimes a few minutes late, which the app tolerates). On Vercel Pro you can instead add `{ "path": "/api/cron/reminders", "schedule": "*/15 * * * *" }` to `vercel.json`.
+That's it. GitHub calls the app every 15 minutes (sometimes a few minutes late, which the app allows for).
 
-### 5. Sign in and install on your phone
+Optional, same screen: add `SUPABASE_ACCESS_TOKEN` (from supabase.com, **Account > Access Tokens**), `SUPABASE_PROJECT_REF` (the code in your project's URL after `/project/`) and `SUPABASE_DB_PASSWORD`. Then any future database changes are applied automatically when they reach `main` (the "Database migrations" workflow), so you never need the SQL Editor again.
 
-1. Open your Vercel URL on your phone, enter your email, and tap the link in the email **on the same phone**.
+### 4. Sign in and install on your phone
+
+1. Open your Vercel address on your phone, enter your email, and tap the link in the email **on the same phone**.
 2. Install it:
    - **iPhone or iPad (Safari)**: Share, then **Add to Home Screen**. Open the journal from the Home Screen icon. **Notifications only work when opened from the Home Screen** (iOS 16.4 or later).
    - **Android (Chrome)**: menu, then **Install app** (or Add to Home screen).
-3. Optional: in **Settings > Privacy and lock**, add a passkey so you can sign in with Face ID or your fingerprint, and set a PIN.
+3. Optional: in **Settings > Privacy and lock**, add a passkey and set a PIN.
 
-### 6. Turn on reminders
+### 5. Turn on reminders
 
 In **Settings > Reminders** on the installed app:
 
 1. Tap **Turn on notifications on this device** and allow them.
-2. Tap **Send a test notification**. You should see it within a few seconds.
-3. Turn on **Daily reminder**, pick a time (default 21:30), and optionally write the habit it follows ("after dinner"). The one gentle follow-up (default 23:00) is only sent if you haven't written. Never more than two a day.
+2. Tap **Send a test notification**. It should arrive within a few seconds.
+3. Turn on **Daily reminder**, pick a time (default 21:30), and optionally write the habit it follows ("after dinner"). The one gentle follow-up (default 23:00) only goes out if you haven't written. Never more than two a day.
 
 ---
 
 ## Local development
+
+You only need this to change the code. It is not needed to set up or use the journal.
+
+**Generate secrets**: `pnpm gen:vapid` prints new `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `CRON_SECRET` values.
 
 Requirements: Node 22, pnpm 10, Docker (for the local Supabase stack).
 
@@ -150,7 +132,9 @@ CI (`.github/workflows/ci.yml`) runs typecheck, lint, unit tests, and the e2e su
 - **JSON**: the complete journal as one file.
 - **Print or save as PDF**: any date range, or a single entry from its page. The therapy summary is under Insights.
 
-**Restore from a backup** (for example into a brand new Supabase project after following steps 2 and 3 above):
+**Restore from a backup, in the browser**: add the repository secrets `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `ALLOWED_EMAIL` (GitHub, **Settings > Secrets and variables > Actions**), then open the **Actions** tab, choose **Restore from backup**, click **Run workflow**, and type `restore`. It restores the newest backup in your project's `backups` bucket. If you moved to a brand new Supabase project, first upload the backup file into that project's `backups` bucket under a folder named after your new user id (sign in once to create it), or use the command line steps below.
+
+**Restore from a backup, from a computer** (for example into a brand new Supabase project after following steps 1 and 2 above):
 
 1. Get a backup file: in Supabase, **Storage > backups > (your user id)**, download the newest `backup-....json`, or use a `journal.json` from an export.
 2. Put the new project's values in `.env.local` (`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ALLOWED_EMAIL`).
