@@ -8,11 +8,16 @@ import { features, serverEnv } from "@/lib/env";
 const BUCKET = "attachments";
 const URL_TTL = 60 * 60; // 1 hour
 
-export async function signAttachments<T extends Pick<Entry, "attachments">>(entries: T[]): Promise<T[]> {
+export async function signAttachments<T extends Pick<Entry, "attachments">>(
+  entries: T[],
+): Promise<T[]> {
   const all = entries.flatMap((e) => e.attachments);
   if (!all.length) return entries;
   const supabase = await serverClient();
-  const { data } = await supabase.storage.from(BUCKET).createSignedUrls(all.map((a) => a.storagePath), URL_TTL);
+  const { data } = await supabase.storage.from(BUCKET).createSignedUrls(
+    all.map((a) => a.storagePath),
+    URL_TTL,
+  );
   const urls = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
   return entries.map((e) => ({
     ...e,
@@ -31,7 +36,11 @@ export async function addAttachment(input: {
   const user = await requireUser();
   if (!input.storagePath.startsWith(`${user.id}/`)) throw new Error("Bad path");
   const supabase = await serverClient();
-  const { data: entry } = await supabase.from("entries").select("id").eq("entry_date", input.date).maybeSingle();
+  const { data: entry } = await supabase
+    .from("entries")
+    .select("id")
+    .eq("entry_date", input.date)
+    .maybeSingle();
   if (!entry) return null;
   const { data, error } = await supabase
     .from("attachments")
@@ -47,7 +56,9 @@ export async function addAttachment(input: {
     .select("*")
     .single();
   if (error || !data) throw new Error(error?.message ?? "insert failed");
-  const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrl(data.storage_path, URL_TTL);
+  const { data: signed } = await supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(data.storage_path, URL_TTL);
   return {
     id: data.id,
     kind: data.kind as Attachment["kind"],
@@ -62,7 +73,11 @@ export async function addAttachment(input: {
 export async function removeAttachment(id: string) {
   await requireUser();
   const supabase = await serverClient();
-  const { data } = await supabase.from("attachments").select("storage_path").eq("id", id).maybeSingle();
+  const { data } = await supabase
+    .from("attachments")
+    .select("storage_path")
+    .eq("id", id)
+    .maybeSingle();
   if (!data) return;
   await supabase.storage.from(BUCKET).remove([data.storage_path]);
   await supabase.from("attachments").delete().eq("id", id);

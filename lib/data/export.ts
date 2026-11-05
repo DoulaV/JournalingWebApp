@@ -25,9 +25,20 @@ export interface JournalExport {
  * letters out. With the admin client (backups) sealed letters are included so a
  * restore loses nothing.
  */
-export async function buildExport(supabase: Client, userId: string, range?: { from?: string; to?: string }): Promise<JournalExport> {
-  const { data: profile } = await supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle();
-  const { data: tags } = await supabase.from("tags").select("id, name, is_default").eq("user_id", userId);
+export async function buildExport(
+  supabase: Client,
+  userId: string,
+  range?: { from?: string; to?: string },
+): Promise<JournalExport> {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+  const { data: tags } = await supabase
+    .from("tags")
+    .select("id, name, is_default")
+    .eq("user_id", userId);
 
   const entries: JournalExport["entries"] = [];
   const pageSize = 500;
@@ -43,7 +54,13 @@ export async function buildExport(supabase: Client, userId: string, range?: { fr
     const { data, error } = await q;
     if (error) throw new Error(error.message);
     for (const r of data ?? []) {
-      const { entry_emotions, entry_tags, attachments, search: _search, ...rest } = r as typeof r & { search?: unknown };
+      const {
+        entry_emotions,
+        entry_tags,
+        attachments,
+        search: _search,
+        ...rest
+      } = r as typeof r & { search?: unknown };
       void _search;
       entries.push({
         ...rest,
@@ -56,7 +73,11 @@ export async function buildExport(supabase: Client, userId: string, range?: { fr
   }
 
   const { data: letters } = await supabase.from("future_letters").select("*").eq("user_id", userId);
-  const { data: streak } = await supabase.from("streaks").select("*").eq("user_id", userId).maybeSingle();
+  const { data: streak } = await supabase
+    .from("streaks")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
 
   let safeProfile: Record<string, unknown> | null = null;
   if (profile) {
@@ -85,10 +106,14 @@ export async function writeBackup(admin: Client, userId: string): Promise<string
   const path = `${userId}/backup-${stamp}.json`;
   const { error } = await admin.storage
     .from("backups")
-    .upload(path, new Blob([JSON.stringify(data)], { type: "application/json" }), { contentType: "application/json" });
+    .upload(path, new Blob([JSON.stringify(data)], { type: "application/json" }), {
+      contentType: "application/json",
+    });
   if (error) throw new Error(error.message);
 
-  const { data: files } = await admin.storage.from("backups").list(userId, { limit: 100, sortBy: { column: "name", order: "desc" } });
+  const { data: files } = await admin.storage
+    .from("backups")
+    .list(userId, { limit: 100, sortBy: { column: "name", order: "desc" } });
   const old = (files ?? []).filter((f) => f.name.startsWith("backup-")).slice(KEEP);
   if (old.length) await admin.storage.from("backups").remove(old.map((f) => `${userId}/${f.name}`));
   return path;

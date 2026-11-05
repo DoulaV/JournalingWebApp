@@ -9,7 +9,8 @@ type IconName = "today" | "calendar" | "entries" | "search" | "insights" | "lett
 
 const paths: Record<IconName, string> = {
   today: "M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z",
-  calendar: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z",
+  calendar:
+    "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z",
   entries: "M4 6h16M4 12h16M4 18h10",
   search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm10 2-4.35-4.35",
   insights: "M3 3v18h18M7 15l4-4 3 3 5-6",
@@ -20,25 +21,44 @@ const paths: Record<IconName, string> = {
 
 export function Icon({ name, className }: { name: IconName; className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden className={cn("size-6", className)}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={cn("size-6", className)}
+    >
       <path d={paths[name]} />
     </svg>
   );
 }
 
 const MOBILE: IconName[] = ["today", "calendar", "insights", "settings"];
-const DESKTOP: IconName[] = ["today", "calendar", "entries", "search", "insights", "letters", "settings"];
+const DESKTOP: IconName[] = [
+  "today",
+  "calendar",
+  "entries",
+  "search",
+  "insights",
+  "letters",
+  "settings",
+];
 
 export function Nav({ t }: { t: Dict }) {
   const pathname = usePathname();
   const active = (n: IconName) =>
-    pathname === `/${n}` || pathname.startsWith(`/${n}/`) || (n === "entries" && pathname.startsWith("/entry/"));
+    pathname === `/${n}` ||
+    pathname.startsWith(`/${n}/`) ||
+    (n === "entries" && pathname.startsWith("/entry/"));
 
   return (
     <>
       <nav
         aria-label={t.nav.main}
-        className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="no-print border-border bg-surface/95 fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
         <ul className="mx-auto grid max-w-md grid-cols-4">
           {MOBILE.map((n) => (
@@ -46,7 +66,10 @@ export function Nav({ t }: { t: Dict }) {
               <Link
                 href={`/${n}`}
                 aria-current={active(n) ? "page" : undefined}
-                className={cn("flex min-h-16 flex-col items-center justify-center gap-1 text-xs", active(n) ? "text-accent" : "text-muted")}
+                className={cn(
+                  "flex min-h-16 flex-col items-center justify-center gap-1 text-xs",
+                  active(n) ? "text-accent" : "text-muted",
+                )}
               >
                 <Icon name={n} />
                 {t.nav[n]}
@@ -55,7 +78,10 @@ export function Nav({ t }: { t: Dict }) {
           ))}
         </ul>
       </nav>
-      <nav aria-label={t.nav.main} className="no-print sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 border-e border-border p-5 md:flex">
+      <nav
+        aria-label={t.nav.main}
+        className="no-print border-border sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 border-e p-5 md:flex"
+      >
         <Link href="/today" className="mb-6 px-3 font-serif text-xl font-semibold">
           {t.appName}
         </Link>
@@ -66,7 +92,7 @@ export function Nav({ t }: { t: Dict }) {
             aria-current={active(n) ? "page" : undefined}
             className={cn(
               "flex min-h-11 items-center gap-3 rounded-xl px-3 text-[15px]",
-              active(n) ? "bg-accent-soft font-medium text-text" : "text-muted hover:bg-surface-2",
+              active(n) ? "bg-accent-soft text-text font-medium" : "text-muted hover:bg-surface-2",
             )}
           >
             <Icon name={n} className="size-5" />
@@ -84,7 +110,11 @@ export function MobileQuickLinks({ t }: { t: Dict }) {
   return (
     <div className="no-print -mx-1 mb-4 flex gap-2 overflow-x-auto px-1 md:hidden">
       {items.map((n) => (
-        <Link key={n} href={`/${n}`} className="flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-border px-3 text-sm">
+        <Link
+          key={n}
+          href={`/${n}`}
+          className="border-border flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-3 text-sm"
+        >
           <Icon name={n} className="size-4" />
           {t.nav[n]}
         </Link>

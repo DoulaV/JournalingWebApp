@@ -19,12 +19,14 @@ Stay curious and warm. Do not diagnose, label conditions, or give clinical or me
 If something in the entries suggests they may be unsafe, gently mention that talking to someone they trust or a professional can help.
 Use plain text with short headings. Never use em dashes.`;
 
-export type ReflectionResult = { ok: true; text: string } | { ok: false; reason: "disabled" | "empty" | "declined" | "error" };
+export type ReflectionResult =
+  { ok: true; text: string } | { ok: false; reason: "disabled" | "empty" | "declined" | "error" };
 
 export async function reflectOnWeek(): Promise<ReflectionResult> {
   const user = await requireUser();
   const profile = await getProfileRow();
-  if (!profile.ai_reflection_enabled || !features.aiReflectionAvailable()) return { ok: false, reason: "disabled" };
+  if (!profile.ai_reflection_enabled || !features.aiReflectionAvailable())
+    return { ok: false, reason: "disabled" };
 
   const today = localDate(new Date(), profile.timezone);
   const weekStart = startOfWeek(today);
@@ -34,7 +36,9 @@ export async function reflectOnWeek(): Promise<ReflectionResult> {
   const lang = profile.language === "ar" ? "ar" : "en";
   const journal = entries
     .map((e) => {
-      const feelings = e.emotions.map((em) => `${breadcrumb(em, lang).join(" > ")} (${em.intensity}/5)`).join(", ");
+      const feelings = e.emotions
+        .map((em) => `${breadcrumb(em, lang).join(" > ")} (${em.intensity}/5)`)
+        .join(", ");
       return `## ${e.date}\nFeelings: ${feelings || "not named"}\n${e.title ? `${e.title}\n` : ""}${e.bodyText}`;
     })
     .join("\n\n");
@@ -48,19 +52,23 @@ export async function reflectOnWeek(): Promise<ReflectionResult> {
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       system: SYSTEM,
-      messages: [{ role: "user", content: `Here are my journal entries from this week:\n\n${journal}` }],
+      messages: [
+        { role: "user", content: `Here are my journal entries from this week:\n\n${journal}` },
+      ],
     });
     if (response.stop_reason === "refusal") return { ok: false, reason: "declined" };
     const text = response.content
       .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")
       .map((b) => b.text)
       .join("\n")
-      .replaceAll("—", ", ")
+      .replaceAll(String.fromCharCode(0x2014), ", ")
       .trim();
     if (!text) return { ok: false, reason: "error" };
 
     const supabase = await serverClient();
-    await supabase.from("ai_reflections").insert({ user_id: user.id, week_start: weekStart, content: text });
+    await supabase
+      .from("ai_reflections")
+      .insert({ user_id: user.id, week_start: weekStart, content: text });
     return { ok: true, text };
   } catch (e) {
     if (e instanceof Anthropic.APIError) console.error("reflection failed", e.status);

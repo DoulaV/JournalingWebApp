@@ -7,7 +7,8 @@ export type SyncOutcome = SaveResult | { ok: false; reason: "offline" };
 
 /** Push one draft to the server. Network failures leave it pending. */
 export async function syncDraft(d: Draft): Promise<SyncOutcome> {
-  if (typeof navigator !== "undefined" && !navigator.onLine) return { ok: false, reason: "offline" };
+  if (typeof navigator !== "undefined" && !navigator.onLine)
+    return { ok: false, reason: "offline" };
   try {
     const res = await saveEntryAction({
       date: d.date,

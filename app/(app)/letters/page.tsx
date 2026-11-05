@@ -22,29 +22,52 @@ export default async function LettersPage() {
     <div className="space-y-6">
       <h1 className="font-serif text-3xl font-semibold">{t.letters.title}</h1>
       {!unlocked && letters.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-6 text-center text-muted">{t.letters.locked}</p>
+        <p className="border-border text-muted rounded-2xl border border-dashed p-6 text-center">
+          {t.letters.locked}
+        </p>
       ) : (
         <>
-          {unlocked && <LetterForm t={t} minDate={addDays(today, 1)} defaultDate={addDays(today, 365)} />}
+          {unlocked && (
+            <LetterForm t={t} minDate={addDays(today, 1)} defaultDate={addDays(today, 365)} />
+          )}
           {letters.length === 0 ? (
             <p className="text-muted">{t.letters.empty}</p>
           ) : (
             <ul className="space-y-3">
               {letters.map((l) => (
-                <li key={l.id} className="rounded-2xl border border-border bg-surface p-4" data-testid="letter">
+                <li
+                  key={l.id}
+                  className="border-border bg-surface rounded-2xl border p-4"
+                  data-testid="letter"
+                >
                   {l.isOpen ? (
                     <Link href={`/letters/${l.id}`} className="block">
                       <p className="font-medium" dir="auto">
                         {l.title || t.letters.ready}
                       </p>
-                      <p className="text-sm text-muted">
-                        {l.openedAt ? fmt(t.letters.opened, { date: formatDate(l.openedAt.slice(0, 10), lang, { weekday: undefined }) }) : t.letters.ready}
+                      <p className="text-muted text-sm">
+                        {l.openedAt
+                          ? fmt(t.letters.opened, {
+                              date: formatDate(l.openedAt.slice(0, 10), lang, {
+                                weekday: undefined,
+                              }),
+                            })
+                          : t.letters.ready}
                       </p>
                     </Link>
                   ) : (
                     <div className="flex items-center gap-3">
-                      <span aria-hidden className="text-xl">✉</span>
-                      <p className="text-sm">{fmt(t.letters.sealed, { date: formatDate(l.sealedUntil, lang, { weekday: undefined, year: "numeric" }) })}</p>
+                      <span aria-hidden className="text-xl">
+                        ✉
+                      </span>
+                      <p className="text-sm">
+                        {fmt(t.letters.sealed, {
+                          date: formatDate(l.sealedUntil, lang, {
+                            weekday: undefined,
+                            year: "numeric",
+                          }),
+                        })}
+                      </p>
                     </div>
                   )}
                 </li>

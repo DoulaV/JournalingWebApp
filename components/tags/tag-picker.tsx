@@ -22,7 +22,8 @@ export function TagPicker({
 }) {
   const [all, setAll] = useState(tags);
   const [draft, setDraft] = useState("");
-  const toggle = (id: string) => onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
+  const toggle = (id: string) =>
+    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
 
   async function add() {
     const name = draft.trim();
@@ -39,7 +40,7 @@ export function TagPicker({
 
   return (
     <fieldset>
-      <legend className="mb-2 text-sm text-muted">{label}</legend>
+      <legend className="text-muted mb-2 text-sm">{label}</legend>
       <div className="flex flex-wrap gap-2">
         {all.map((t) => (
           <button
@@ -49,7 +50,9 @@ export function TagPicker({
             onClick={() => toggle(t.id)}
             className={cn(
               "min-h-10 rounded-full border px-4 text-sm",
-              value.includes(t.id) ? "border-accent bg-accent-soft font-medium" : "border-border bg-surface",
+              value.includes(t.id)
+                ? "border-accent bg-accent-soft font-medium"
+                : "border-border bg-surface",
             )}
           >
             {tagLabel(t.name, lang)}
@@ -68,7 +71,7 @@ export function TagPicker({
             aria-label={lang === "ar" ? "جانب جديد" : "New life area"}
             placeholder="+"
             dir="auto"
-            className="min-h-10 w-24 rounded-full border border-dashed border-border bg-transparent px-3 text-sm"
+            className="border-border min-h-10 w-24 rounded-full border border-dashed bg-transparent px-3 text-sm"
           />
         </span>
       </div>

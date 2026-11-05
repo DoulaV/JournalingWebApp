@@ -24,7 +24,10 @@ export default async function MilestonesPage() {
   const lookBack = isUnlocked("lookBack", streak.longest);
   const yearReview = isUnlocked("yearReview", streak.longest);
   const first = lookBack ? await firstEntryDate() : null;
-  const [dayOne, todayEntry] = lookBack && first ? await Promise.all([getEntryByDate(first), getEntryByDate(today)]) : [null, null];
+  const [dayOne, todayEntry] =
+    lookBack && first
+      ? await Promise.all([getEntryByDate(first), getEntryByDate(today)])
+      : [null, null];
   const year = yearReview ? await entriesInRange(addDays(today, -364), today) : [];
   const yearRecap = yearReview ? recap(year) : null;
 
@@ -33,7 +36,10 @@ export default async function MilestonesPage() {
       <h1 className="font-serif text-3xl font-semibold">{t.rewards.title}</h1>
       <StreakBadge streak={streak} t={t.streak} />
 
-      <section aria-labelledby="unlocks" className="rounded-2xl border border-border bg-surface p-5">
+      <section
+        aria-labelledby="unlocks"
+        className="border-border bg-surface rounded-2xl border p-5"
+      >
         <h2 id="unlocks" className="mb-3 text-lg font-semibold">
           {t.rewards.title}
         </h2>
@@ -62,7 +68,9 @@ export default async function MilestonesPage() {
                     fmt(t.streak.milestone, { n: m })
                   )}
                 </span>
-                <span className="text-sm text-muted">{reached ? t.rewards.unlocked : fmt(t.rewards.unlockedAt, { n: m })}</span>
+                <span className="text-muted text-sm">
+                  {reached ? t.rewards.unlocked : fmt(t.rewards.unlockedAt, { n: m })}
+                </span>
               </li>
             );
           })}
@@ -82,19 +90,29 @@ export default async function MilestonesPage() {
       )}
 
       {yearRecap && (
-        <section id="year" aria-labelledby="year-h" className="space-y-3 rounded-2xl border border-border bg-surface p-5">
+        <section
+          id="year"
+          aria-labelledby="year-h"
+          className="border-border bg-surface space-y-3 rounded-2xl border p-5"
+        >
           <h2 id="year-h" className="font-serif text-2xl font-semibold">
             {t.rewards.yearReview}
           </h2>
           <p>
-            {year.length} {t.common.days} · {fmt(t.common.words, { n: year.reduce((a, e) => a + e.wordCount, 0) })}
+            {year.length} {t.common.days} ·{" "}
+            {fmt(t.common.words, { n: year.reduce((a, e) => a + e.wordCount, 0) })}
           </p>
-          <h3 className="text-sm font-medium text-muted">{t.insights.mostCommon}</h3>
+          <h3 className="text-muted text-sm font-medium">{t.insights.mostCommon}</h3>
           <ul className="space-y-1">
             {yearRecap.mostCommon.map((m) => (
               <li key={m.key} className="flex items-center gap-2 text-sm">
-                <span aria-hidden className="size-2.5 rounded-full" style={{ background: getCore(m.emotion.core).color }} />
-                {breadcrumb(m.emotion, lang).join(" › ")} <span className="ms-auto text-muted">{m.count}</span>
+                <span
+                  aria-hidden
+                  className="size-2.5 rounded-full"
+                  style={{ background: getCore(m.emotion.core).color }}
+                />
+                {breadcrumb(m.emotion, lang).join(" › ")}{" "}
+                <span className="text-muted ms-auto">{m.count}</span>
               </li>
             ))}
           </ul>
@@ -104,15 +122,29 @@ export default async function MilestonesPage() {
   );
 }
 
-function SideEntry({ label, entry, lang, t }: { label: string; entry: Entry | null; lang: "en" | "ar"; t: ReturnType<typeof getDict> }) {
+function SideEntry({
+  label,
+  entry,
+  lang,
+  t,
+}: {
+  label: string;
+  entry: Entry | null;
+  lang: "en" | "ar";
+  t: ReturnType<typeof getDict>;
+}) {
   return (
-    <article className="rounded-2xl border border-border bg-surface p-5">
-      <p className="text-sm font-medium text-muted">
+    <article className="border-border bg-surface rounded-2xl border p-5">
+      <p className="text-muted text-sm font-medium">
         {label}
         {entry && ` · ${formatDate(entry.date, lang, { year: "numeric" })}`}
       </p>
       <div className="entry-prose mt-2">
-        {entry ? <RenderDoc doc={entry.body} fallbackText={entry.bodyText} /> : <p className="text-muted">{t.entries.noText}</p>}
+        {entry ? (
+          <RenderDoc doc={entry.body} fallbackText={entry.bodyText} />
+        ) : (
+          <p className="text-muted">{t.entries.noText}</p>
+        )}
       </div>
     </article>
   );

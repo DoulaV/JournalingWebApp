@@ -17,7 +17,15 @@ export interface InsightEntry {
  * identical, so they are never placed next to each other (validated for
  * colorblind separation). Charts also carry legends, tooltips and a table view.
  */
-export const CHART_ORDER: CoreId[] = ["happy", "surprised", "bad", "sad", "fearful", "disgusted", "angry"];
+export const CHART_ORDER: CoreId[] = [
+  "happy",
+  "surprised",
+  "bad",
+  "sad",
+  "fearful",
+  "disgusted",
+  "angry",
+];
 
 /** How pleasant each core feeling is, from -1 (hard) to 1 (pleasant). */
 export const CORE_VALENCE: Record<CoreId, number> = {
@@ -80,11 +88,14 @@ export function emotionTrends(entries: InsightEntry[], bucket: Bucket) {
   const rows = new Map<string, Record<CoreId, number>>();
   for (const e of entries) {
     const key = bucket === "week" ? startOfWeek(e.date) : startOfMonth(e.date);
-    const row = rows.get(key) ?? (Object.fromEntries(CORE_IDS.map((c) => [c, 0])) as Record<CoreId, number>);
+    const row =
+      rows.get(key) ?? (Object.fromEntries(CORE_IDS.map((c) => [c, 0])) as Record<CoreId, number>);
     for (const em of e.emotions) row[em.core] += em.intensity;
     rows.set(key, row);
   }
-  return [...rows.entries()].sort(([a], [b]) => (a < b ? -1 : 1)).map(([period, counts]) => ({ period, ...counts }));
+  return [...rows.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([period, counts]) => ({ period, ...counts }));
 }
 
 /** Which cores appear with which tags. */
@@ -92,7 +103,12 @@ export function triggers(entries: InsightEntry[]) {
   const map = new Map<string, Record<CoreId, number> & { total: number }>();
   for (const e of entries) {
     for (const tag of e.tagIds) {
-      const row = map.get(tag) ?? ({ ...Object.fromEntries(CORE_IDS.map((c) => [c, 0])), total: 0 } as Record<CoreId, number> & { total: number });
+      const row =
+        map.get(tag) ??
+        ({ ...Object.fromEntries(CORE_IDS.map((c) => [c, 0])), total: 0 } as Record<
+          CoreId,
+          number
+        > & { total: number });
       for (const em of e.emotions) {
         row[em.core] += 1;
         row.total += 1;
@@ -100,7 +116,9 @@ export function triggers(entries: InsightEntry[]) {
       map.set(tag, row);
     }
   }
-  return [...map.entries()].map(([tagId, counts]) => ({ tagId, ...counts })).sort((a, b) => b.total - a.total);
+  return [...map.entries()]
+    .map(([tagId, counts]) => ({ tagId, ...counts }))
+    .sort((a, b) => b.total - a.total);
 }
 
 /** Average pleasantness by weekday, Monday first. */
@@ -113,7 +131,11 @@ export function dayOfWeekPattern(entries: InsightEntry[]) {
     sums[i].total += p;
     sums[i].n += 1;
   }
-  return sums.map((s, i) => ({ weekday: i, average: s.n ? Math.round((s.total / s.n) * 100) / 100 : null, count: s.n }));
+  return sums.map((s, i) => ({
+    weekday: i,
+    average: s.n ? Math.round((s.total / s.n) * 100) / 100 : null,
+    count: s.n,
+  }));
 }
 
 export interface Recap {
@@ -156,12 +178,21 @@ export function recap(entries: InsightEntry[]): Recap {
   }
   const scored = [...byTag.entries()]
     .filter(([, v]) => v.length >= 2)
-    .map(([tagId, v]) => ({ tagId, score: Math.round((v.reduce((a, b) => a + b, 0) / v.length - base) * 100) / 100 }));
+    .map(([tagId, v]) => ({
+      tagId,
+      score: Math.round((v.reduce((a, b) => a + b, 0) / v.length - base) * 100) / 100,
+    }));
   return {
     entries: entries.length,
     mostCommon,
     strongestDays,
-    lifted: scored.filter((s) => s.score > 0.15).sort((a, b) => b.score - a.score).slice(0, 3),
-    drained: scored.filter((s) => s.score < -0.15).sort((a, b) => a.score - b.score).slice(0, 3),
+    lifted: scored
+      .filter((s) => s.score > 0.15)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3),
+    drained: scored
+      .filter((s) => s.score < -0.15)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3),
   };
 }

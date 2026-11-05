@@ -15,7 +15,11 @@ export function isValidEntry(e: {
 }
 
 export function firstLine(text: string, max = 140): string {
-  const line = text.split("\n").map((l) => l.trim()).find(Boolean) ?? "";
+  const line =
+    text
+      .split("\n")
+      .map((l) => l.trim())
+      .find(Boolean) ?? "";
   return line.length > max ? `${line.slice(0, max - 1).trimEnd()}…` : line;
 }
 
@@ -25,7 +29,9 @@ export function textToDoc(text: string) {
   return {
     type: "doc",
     content: lines.map((l) =>
-      l.trim() ? { type: "paragraph", content: [{ type: "text", text: l }] } : { type: "paragraph" },
+      l.trim()
+        ? { type: "paragraph", content: [{ type: "text", text: l }] }
+        : { type: "paragraph" },
     ),
   };
 }

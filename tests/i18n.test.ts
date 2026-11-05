@@ -6,7 +6,8 @@ function flatten(o: unknown, prefix = ""): Record<string, string> {
   if (typeof o === "string") out[prefix] = o;
   else if (Array.isArray(o)) o.forEach((v, i) => Object.assign(out, flatten(v, `${prefix}[${i}]`)));
   else if (o && typeof o === "object")
-    for (const [k, v] of Object.entries(o)) Object.assign(out, flatten(v, prefix ? `${prefix}.${k}` : k));
+    for (const [k, v] of Object.entries(o))
+      Object.assign(out, flatten(v, prefix ? `${prefix}.${k}` : k));
   return out;
 }
 
@@ -21,7 +22,10 @@ describe("i18n", () => {
   });
 
   it("has no empty strings, em dashes or exclamation marks", () => {
-    for (const [k, v] of Object.entries({ ...en, ...Object.fromEntries(Object.entries(ar).map(([a, b]) => [`ar.${a}`, b])) })) {
+    for (const [k, v] of Object.entries({
+      ...en,
+      ...Object.fromEntries(Object.entries(ar).map(([a, b]) => [`ar.${a}`, b])),
+    })) {
       expect(v.trim(), k).not.toBe("");
       expect(DASH.test(v), k).toBe(false);
       expect(v.includes("!"), k).toBe(false);
@@ -41,7 +45,13 @@ describe("i18n", () => {
   });
 
   it("never uses guilt in notification copy", () => {
-    const all = [...dictionaries.en.notifications.reminders, ...dictionaries.en.notifications.nudges].join(" ").toLowerCase();
-    for (const w of ["lose", "lost", "break", "fail", "miss", "should"]) expect(all.includes(w), w).toBe(false);
+    const all = [
+      ...dictionaries.en.notifications.reminders,
+      ...dictionaries.en.notifications.nudges,
+    ]
+      .join(" ")
+      .toLowerCase();
+    for (const w of ["lose", "lost", "break", "fail", "miss", "should"])
+      expect(all.includes(w), w).toBe(false);
   });
 });

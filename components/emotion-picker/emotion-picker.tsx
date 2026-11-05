@@ -31,7 +31,10 @@ interface Props {
   bodyCheck?: boolean;
 }
 
-type Step = { ring: "core" } | { ring: "middle"; core: CoreId } | { ring: "precise"; core: CoreId; middle: string };
+type Step =
+  | { ring: "core" }
+  | { ring: "middle"; core: CoreId }
+  | { ring: "precise"; core: CoreId; middle: string };
 
 const MAX = 3;
 
@@ -49,7 +52,10 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
       setAdding(false);
       return;
     }
-    onChange({ emotions: [...value.emotions, { ...e, intensity: 3 }], moodValence: value.moodValence });
+    onChange({
+      emotions: [...value.emotions, { ...e, intensity: 3 }],
+      moodValence: value.moodValence,
+    });
     setStep({ ring: "core" });
     setAdding(false);
     setNotSure(false);
@@ -82,7 +88,9 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
   }
 
   const crumbs =
-    step.ring === "core" ? [] : breadcrumb({ core: step.core, middle: step.ring === "precise" ? step.middle : null }, lang);
+    step.ring === "core"
+      ? []
+      : breadcrumb({ core: step.core, middle: step.ring === "precise" ? step.middle : null }, lang);
 
   return (
     <div className="space-y-5">
@@ -92,25 +100,29 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
             const color = getCore(e.core).color;
             const name = emotionLabel(e, lang);
             return (
-              <div key={pathKey(e)} className="rounded-2xl border border-border bg-surface p-4">
+              <div key={pathKey(e)} className="border-border bg-surface rounded-2xl border p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="flex items-center gap-2 font-medium">
-                    <span aria-hidden className="size-3 rounded-full" style={{ background: color }} />
+                    <span
+                      aria-hidden
+                      className="size-3 rounded-full"
+                      style={{ background: color }}
+                    />
                     {breadcrumb(e, lang).join(" › ")}
                   </span>
                   <button
                     type="button"
                     onClick={() => remove(i)}
-                    className="flex size-10 items-center justify-center rounded-full text-muted hover:bg-surface-2"
+                    className="text-muted hover:bg-surface-2 flex size-10 items-center justify-center rounded-full"
                     aria-label={fmt(t.remove, { name })}
                   >
                     <span aria-hidden>✕</span>
                   </button>
                 </div>
-                <label className="mt-3 block text-sm text-muted" htmlFor={`intensity-${i}`}>
+                <label className="text-muted mt-3 block text-sm" htmlFor={`intensity-${i}`}>
                   {t.intensity}
                 </label>
-                <div className="mt-1 flex items-center gap-3 text-xs text-muted">
+                <div className="text-muted mt-1 flex items-center gap-3 text-xs">
                   <span>{t.mild}</span>
                   <input
                     id={`intensity-${i}`}
@@ -128,17 +140,21 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
                 </div>
                 {bodyCheck && (
                   <fieldset className="mt-3">
-                    <legend className="text-sm text-muted">{t.bodyCheck}</legend>
+                    <legend className="text-muted text-sm">{t.bodyCheck}</legend>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {BODY_LOCATIONS.map((b) => (
                         <button
                           key={b.id}
                           type="button"
                           aria-pressed={e.bodyLocation === b.id}
-                          onClick={() => update(i, { bodyLocation: e.bodyLocation === b.id ? null : b.id })}
+                          onClick={() =>
+                            update(i, { bodyLocation: e.bodyLocation === b.id ? null : b.id })
+                          }
                           className={cn(
                             "min-h-9 rounded-full border px-3 text-sm",
-                            e.bodyLocation === b.id ? "border-accent bg-accent-soft" : "border-border",
+                            e.bodyLocation === b.id
+                              ? "border-accent bg-accent-soft"
+                              : "border-border",
                           )}
                         >
                           {b.label[lang]}
@@ -154,22 +170,22 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
             <button
               type="button"
               onClick={() => setAdding(true)}
-              className="min-h-11 w-full rounded-2xl border border-dashed border-border text-sm text-muted hover:bg-surface-2"
+              className="border-border text-muted hover:bg-surface-2 min-h-11 w-full rounded-2xl border border-dashed text-sm"
             >
               + {t.addAnother}
             </button>
           )}
-          {full && <p className="text-sm text-muted">{t.maxReached}</p>}
+          {full && <p className="text-muted text-sm">{t.maxReached}</p>}
         </section>
       )}
 
       {notSure && value.emotions.length === 0 ? (
-        <section className="rounded-2xl border border-border bg-surface p-5">
+        <section className="border-border bg-surface rounded-2xl border p-5">
           <h3 className="font-medium">{t.notSureTitle}</h3>
           <label htmlFor="valence" className="sr-only">
             {t.valence}
           </label>
-          <div className="mt-4 flex items-center gap-3 text-sm text-muted">
+          <div className="text-muted mt-4 flex items-center gap-3 text-sm">
             <span>{t.unpleasant}</span>
             <input
               id="valence"
@@ -190,7 +206,7 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
               setAdding(true);
               onChange({ emotions: [], moodValence: null });
             }}
-            className="mt-3 min-h-10 text-sm text-muted underline underline-offset-4"
+            className="text-muted mt-3 min-h-10 text-sm underline underline-offset-4"
           >
             {t.useWords}
           </button>
@@ -201,16 +217,20 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
           <section aria-label={t.pickCore} className="space-y-4">
             {step.ring === "core" && recents.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm text-muted">{t.recent}</h3>
+                <h3 className="text-muted mb-2 text-sm">{t.recent}</h3>
                 <div className="flex flex-wrap gap-2">
                   {recents.map((r) => (
                     <button
                       key={pathKey(r)}
                       type="button"
                       onClick={() => add({ core: r.core, middle: r.middle, precise: r.precise })}
-                      className="flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm"
+                      className="border-border bg-surface flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm"
                     >
-                      <span aria-hidden className="size-2.5 rounded-full" style={{ background: getCore(r.core).color }} />
+                      <span
+                        aria-hidden
+                        className="size-2.5 rounded-full"
+                        style={{ background: getCore(r.core).color }}
+                      />
                       {emotionLabel(r, lang)}
                     </button>
                   ))}
@@ -223,12 +243,14 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
                 <button
                   type="button"
                   onClick={back}
-                  className="flex min-h-11 items-center gap-1 rounded-full px-3 text-sm hover:bg-surface-2"
+                  className="hover:bg-surface-2 flex min-h-11 items-center gap-1 rounded-full px-3 text-sm"
                 >
-                  <span aria-hidden className="inline-block rtl:rotate-180">←</span>
+                  <span aria-hidden className="inline-block rtl:rotate-180">
+                    ←
+                  </span>
                   {t.back}
                 </button>
-                <p aria-live="polite" className="text-sm text-muted">
+                <p aria-live="polite" className="text-muted text-sm">
                   {crumbs.join(" › ")}
                 </p>
               </div>
@@ -241,9 +263,13 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
                     key={c.id}
                     type="button"
                     onClick={() => pickCore(c.id)}
-                    className="flex min-h-16 items-center gap-3 rounded-2xl border border-border bg-surface px-4 text-start text-base font-medium hover:bg-surface-2"
+                    className="border-border bg-surface hover:bg-surface-2 flex min-h-16 items-center gap-3 rounded-2xl border px-4 text-start text-base font-medium"
                   >
-                    <span aria-hidden className="size-5 shrink-0 rounded-full" style={{ background: c.color }} />
+                    <span
+                      aria-hidden
+                      className="size-5 shrink-0 rounded-full"
+                      style={{ background: c.color }}
+                    />
                     {c.label[lang]}
                   </button>
                 ))}
@@ -253,7 +279,7 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
                     setNotSure(true);
                     onChange({ emotions: [], moodValence: 3 });
                   }}
-                  className="flex min-h-16 items-center justify-center rounded-2xl border border-dashed border-border px-4 text-base text-muted hover:bg-surface-2"
+                  className="border-border text-muted hover:bg-surface-2 flex min-h-16 items-center justify-center rounded-2xl border border-dashed px-4 text-base"
                   disabled={value.emotions.length > 0}
                   hidden={value.emotions.length > 0}
                 >
@@ -274,7 +300,7 @@ export function EmotionPicker({ value, onChange, depth, recents, lang, t, bodyCh
 
             {step.ring === "precise" && (
               <div className="space-y-2">
-                <p className="text-sm text-muted">{t.preciseOptional}</p>
+                <p className="text-muted text-sm">{t.preciseOptional}</p>
                 <RingGrid
                   color={getCore(step.core).color}
                   justLabel={fmt(t.justCore, {
@@ -324,9 +350,13 @@ function RingGrid({
           key={i.id}
           type="button"
           onClick={() => onPick(i.id)}
-          className="flex min-h-14 items-center gap-2 rounded-2xl border border-border bg-surface px-4 text-start text-base hover:bg-surface-2"
+          className="border-border bg-surface hover:bg-surface-2 flex min-h-14 items-center gap-2 rounded-2xl border px-4 text-start text-base"
         >
-          <span aria-hidden className="size-2.5 shrink-0 rounded-full" style={{ background: color }} />
+          <span
+            aria-hidden
+            className="size-2.5 shrink-0 rounded-full"
+            style={{ background: color }}
+          />
           {i.label}
         </button>
       ))}

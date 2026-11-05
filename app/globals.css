@@ -123,24 +123,38 @@ body {
   line-height: 1.3;
   margin: 1.2em 0 0.5em;
 }
-.entry-prose h1 { font-size: 1.5em; }
-.entry-prose h2 { font-size: 1.3em; }
-.entry-prose h3 { font-size: 1.12em; }
+.entry-prose h1 {
+  font-size: 1.5em;
+}
+.entry-prose h2 {
+  font-size: 1.3em;
+}
+.entry-prose h3 {
+  font-size: 1.12em;
+}
 .entry-prose ul,
 .entry-prose ol {
   padding-inline-start: 1.4em;
   margin: 0 0 0.8em;
 }
-.entry-prose ul { list-style: disc; }
-.entry-prose ol { list-style: decimal; }
+.entry-prose ul {
+  list-style: disc;
+}
+.entry-prose ol {
+  list-style: decimal;
+}
 .entry-prose blockquote {
   border-inline-start: 3px solid var(--border);
   padding-inline-start: 1em;
   color: var(--muted);
   margin: 0 0 0.8em;
 }
-.entry-prose strong { font-weight: 650; }
-.entry-prose em { font-style: italic; }
+.entry-prose strong {
+  font-weight: 650;
+}
+.entry-prose em {
+  font-style: italic;
+}
 .entry-prose code {
   font-family: ui-monospace, monospace;
   font-size: 0.9em;
@@ -167,19 +181,38 @@ body {
 
 /* Calm celebration: a soft glow that fades, nothing more. */
 @keyframes bloom {
-  0% { transform: scale(0.85); opacity: 0; }
-  40% { transform: scale(1.04); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 @keyframes halo {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-  100% { box-shadow: 0 0 0 28px transparent; }
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 28px transparent;
+  }
 }
-.animate-bloom { animation: bloom 900ms ease-out both; }
-.animate-halo { animation: halo 1800ms ease-out 2; }
+.animate-bloom {
+  animation: bloom 900ms ease-out both;
+}
+.animate-halo {
+  animation: halo 1800ms ease-out 2;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -187,8 +220,21 @@ body {
 }
 
 @media print {
-  .no-print { display: none !important; }
-  body { background: #fff; color: #000; }
-  :root { --text: #000; --muted: #444; --border: #ccc; --surface: #fff; --bg: #fff; }
-  .print-page { break-after: page; }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  :root {
+    --text: #000;
+    --muted: #444;
+    --border: #ccc;
+    --surface: #fff;
+    --bg: #fff;
+  }
+  .print-page {
+    break-after: page;
+  }
 }

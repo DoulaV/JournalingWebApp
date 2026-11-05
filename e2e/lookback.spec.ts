@@ -18,7 +18,13 @@ test.describe("looking back", () => {
     const today = dubaiToday();
     const weekAgo = addDaysStr(today, -7);
     await seedEntries(userId, [
-      { date: weekAgo, text: "A week ago I felt brave.", core: "happy", middle: "powerful", intensity: 5 },
+      {
+        date: weekAgo,
+        text: "A week ago I felt brave.",
+        core: "happy",
+        middle: "powerful",
+        intensity: 5,
+      },
       { date: addDaysStr(today, -2), text: "Grey and slow.", core: "sad", intensity: 2 },
     ]);
 
@@ -28,8 +34,13 @@ test.describe("looking back", () => {
 
     await page.getByRole("link", { name: "Year" }).click();
     await expect(page.getByTestId("year-view")).toBeVisible();
-    await expect(page.getByTestId("year-view").locator(`span[title="${weekAgo}"]`)).toHaveCSS("opacity", "1");
-    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
+    await expect(page.getByTestId("year-view").locator(`span[title="${weekAgo}"]`)).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
+    ).toBe(false);
 
     await page.goto("/today");
     await expect(page.getByRole("heading", { name: "On this day" })).toBeVisible();
@@ -40,9 +51,24 @@ test.describe("looking back", () => {
     const userId = await resetUserData();
     const today = dubaiToday();
     await seedEntries(userId, [
-      { date: addDaysStr(today, -3), text: "The meeting with my manager went well.", core: "happy", tags: ["work"] },
-      { date: addDaysStr(today, -4), text: "تحدثت مع أمي طويلا عن الطفولة.", core: "sad", tags: ["family"] },
-      { date: addDaysStr(today, -5), text: "Another meeting, more stress.", core: "fearful", tags: ["work"] },
+      {
+        date: addDaysStr(today, -3),
+        text: "The meeting with my manager went well.",
+        core: "happy",
+        tags: ["work"],
+      },
+      {
+        date: addDaysStr(today, -4),
+        text: "تحدثت مع أمي طويلا عن الطفولة.",
+        core: "sad",
+        tags: ["family"],
+      },
+      {
+        date: addDaysStr(today, -5),
+        text: "Another meeting, more stress.",
+        core: "fearful",
+        tags: ["work"],
+      },
     ]);
 
     await page.goto("/search");
@@ -64,11 +90,17 @@ test.describe("looking back", () => {
 
   test("photos and voice notes attach to today's entry", async ({ page }) => {
     const userId = await resetUserData();
-    await seedEntries(userId, [{ date: dubaiToday(), text: "A walk by the water.", core: "happy" }]);
+    await seedEntries(userId, [
+      { date: dubaiToday(), text: "A walk by the water.", core: "happy" },
+    ]);
     await page.goto("/today");
 
-    await page.locator('input[type="file"]').setInputFiles({ name: "sea.png", mimeType: "image/png", buffer: PNG });
-    await expect(page.getByRole("img", { name: "Photo from this entry" })).toBeVisible({ timeout: 15_000 });
+    await page
+      .locator('input[type="file"]')
+      .setInputFiles({ name: "sea.png", mimeType: "image/png", buffer: PNG });
+    await expect(page.getByRole("img", { name: "Photo from this entry" })).toBeVisible({
+      timeout: 15_000,
+    });
 
     await page.getByRole("button", { name: "Record voice note" }).click();
     await page.waitForTimeout(1500);

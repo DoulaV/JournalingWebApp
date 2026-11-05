@@ -5,6 +5,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { AutoDir } from "./auto-dir";
+import { RenderDoc } from "./render-doc";
 import { useAutosave, type SaveStatus } from "./use-autosave";
 import { getDraft } from "@/lib/drafts";
 import type { Dict } from "@/lib/i18n";
@@ -71,7 +72,11 @@ export function EntryEditor({
       },
     },
     onUpdate: ({ editor }) => {
-      void queue({ title: titleRef.current, body: editor.getJSON(), bodyText: editor.getText({ blockSeparator: "\n" }) });
+      void queue({
+        title: titleRef.current,
+        body: editor.getJSON(),
+        bodyText: editor.getText({ blockSeparator: "\n" }),
+      });
     },
     onBlur: () => void flush(),
   });
@@ -103,7 +108,11 @@ export function EntryEditor({
       .chain()
       .focus("end")
       .insertContent([
-        { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: insertRequest.heading }] },
+        {
+          type: "heading",
+          attrs: { level: 2 },
+          content: [{ type: "text", text: insertRequest.heading }],
+        },
         { type: "paragraph" },
       ])
       .run();
@@ -114,7 +123,11 @@ export function EntryEditor({
     editor
       .chain()
       .focus("end")
-      .insertContent(appendText.text.split("\n").map((l) => ({ type: "paragraph", content: l ? [{ type: "text", text: l }] : [] })))
+      .insertContent(
+        appendText.text
+          .split("\n")
+          .map((l) => ({ type: "paragraph", content: l ? [{ type: "text", text: l }] : [] })),
+      )
       .run();
   }, [editor, appendText]);
 
@@ -128,12 +141,15 @@ export function EntryEditor({
   return (
     <div
       className={cn(
-        focus && "fixed inset-0 z-50 overflow-y-auto bg-bg px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-24",
+        focus &&
+          "bg-bg fixed inset-0 z-50 overflow-y-auto px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-24",
       )}
       style={{ ["--entry-size" as string]: `${fontSize}px` }}
     >
       <div className={cn("mx-auto max-w-2xl", focus && "pt-6")}>
-        <div className={cn("no-print mb-3 flex flex-wrap items-center gap-2", focus && "justify-end")}>
+        <div
+          className={cn("no-print mb-3 flex flex-wrap items-center gap-2", focus && "justify-end")}
+        >
           <span className="flex-1" />
           <SaveIndicator status={status} t={t} />
           {!focus && onFontSize && (
@@ -141,7 +157,7 @@ export function EntryEditor({
               <button
                 type="button"
                 onClick={() => onFontSize(Math.max(14, fontSize - 1))}
-                className="flex size-10 items-center justify-center rounded-full text-sm hover:bg-surface-2"
+                className="hover:bg-surface-2 flex size-10 items-center justify-center rounded-full text-sm"
                 aria-label={t.today.fontSmaller}
               >
                 A−
@@ -149,7 +165,7 @@ export function EntryEditor({
               <button
                 type="button"
                 onClick={() => onFontSize(Math.min(28, fontSize + 1))}
-                className="flex size-10 items-center justify-center rounded-full text-lg hover:bg-surface-2"
+                className="hover:bg-surface-2 flex size-10 items-center justify-center rounded-full text-lg"
                 aria-label={t.today.fontLarger}
               >
                 A+
@@ -159,7 +175,7 @@ export function EntryEditor({
           <button
             type="button"
             onClick={() => setFocus((f) => !f)}
-            className="min-h-10 rounded-full px-3 text-sm hover:bg-surface-2"
+            className="hover:bg-surface-2 min-h-10 rounded-full px-3 text-sm"
             aria-pressed={focus}
           >
             {focus ? t.today.exitFocus : t.today.focus}
@@ -179,15 +195,30 @@ export function EntryEditor({
             setTitle(e.target.value);
             titleRef.current = e.target.value;
             if (editor) {
-              void queue({ title: e.target.value, body: editor.getJSON(), bodyText: editor.getText({ blockSeparator: "\n" }) });
+              void queue({
+                title: e.target.value,
+                body: editor.getJSON(),
+                bodyText: editor.getText({ blockSeparator: "\n" }),
+              });
             }
           }}
           onBlur={() => void flush()}
           placeholder={t.today.titlePlaceholder}
-          className="mb-3 w-full bg-transparent font-serif text-2xl font-semibold placeholder:text-muted/70 focus:outline-none"
+          className="placeholder:text-muted/70 mb-3 w-full bg-transparent font-serif text-2xl font-semibold focus:outline-none"
         />
-        <EditorContent editor={editor} />
-        {!focus && toolbar && <div className="no-print mt-6 flex flex-wrap items-start gap-2 border-t border-border pt-4">{toolbar}</div>}
+        {editor ? (
+          <EditorContent editor={editor} />
+        ) : (
+          // Same content, same size, before the editor loads: no layout shift.
+          <div className="entry-prose min-h-[40vh]" aria-hidden>
+            <RenderDoc doc={initial.body} fallbackText={initial.bodyText} />
+          </div>
+        )}
+        {!focus && toolbar && (
+          <div className="no-print border-border mt-6 flex flex-wrap items-start gap-2 border-t pt-4">
+            {toolbar}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -205,7 +236,11 @@ function SaveIndicator({ status, t }: { status: SaveStatus; t: Dict }) {
             ? t.common.errorShort
             : "";
   return (
-    <span role="status" aria-live="polite" className={cn("text-sm", status === "error" ? "text-danger" : "text-muted")}>
+    <span
+      role="status"
+      aria-live="polite"
+      className={cn("text-sm", status === "error" ? "text-danger" : "text-muted")}
+    >
       {label}
     </span>
   );
@@ -214,6 +249,10 @@ function SaveIndicator({ status, t }: { status: SaveStatus; t: Dict }) {
 function textDoc(text: string) {
   return {
     type: "doc",
-    content: text.split("\n").map((l) => (l ? { type: "paragraph", content: [{ type: "text", text: l }] } : { type: "paragraph" })),
+    content: text
+      .split("\n")
+      .map((l) =>
+        l ? { type: "paragraph", content: [{ type: "text", text: l }] } : { type: "paragraph" },
+      ),
   };
 }

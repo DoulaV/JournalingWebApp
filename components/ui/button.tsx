@@ -35,16 +35,16 @@ export function Button({
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-surface p-5", className)} {...props} />
+    <div className={cn("border-border bg-surface rounded-2xl border p-5", className)} {...props} />
   );
 }
 
 export function Spinner({ label }: { label: string }) {
   return (
-    <span role="status" className="inline-flex items-center gap-2 text-sm text-muted">
+    <span role="status" className="text-muted inline-flex items-center gap-2 text-sm">
       <span
         aria-hidden
-        className="size-4 animate-spin rounded-full border-2 border-border border-t-accent"
+        className="border-border border-t-accent size-4 animate-spin rounded-full border-2"
       />
       {label}
     </span>

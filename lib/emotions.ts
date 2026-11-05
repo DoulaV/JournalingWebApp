@@ -51,59 +51,305 @@ function core(id: CoreId, label: Word, color: string, middle: MiddleEmotion[]): 
 
 export const EMOTIONS: CoreEmotion[] = [
   core("happy", ["Happy", "سعيد"], "#EF9F27", [
-    mid(["Content", "راضٍ"], [["Free", "حر"], ["Joyful", "مبتهج"]]),
-    mid(["Proud", "فخور"], [["Successful", "ناجح"], ["Confident", "واثق بنفسي"]]),
-    mid(["Peaceful", "مطمئن"], [["Loving", "محب"], ["Thankful", "ممتن"]]),
-    mid(["Optimistic", "متفائل"], [["Hopeful", "مفعم بالأمل"], ["Inspired", "ملهَم"]]),
-    mid(["Interested", "مهتم"], [["Curious", "شغوف"], ["Inquisitive", "متسائل"]]),
-    mid(["Accepted", "مقبول"], [["Respected", "محترَم"], ["Valued", "مقدَّر"]]),
-    mid(["Powerful", "قوي"], [["Courageous", "شجاع"], ["Creative", "مبدع"]]),
-    mid(["Trusting", "واثق بمن حولي"], [["Sensitive", "مرهف"], ["Intimate", "قريب"]]),
-    mid(["Playful", "مرِح"], [["Cheeky", "مشاكس"], ["Free", "حر"]]),
+    mid(
+      ["Content", "راضٍ"],
+      [
+        ["Free", "حر"],
+        ["Joyful", "مبتهج"],
+      ],
+    ),
+    mid(
+      ["Proud", "فخور"],
+      [
+        ["Successful", "ناجح"],
+        ["Confident", "واثق بنفسي"],
+      ],
+    ),
+    mid(
+      ["Peaceful", "مطمئن"],
+      [
+        ["Loving", "محب"],
+        ["Thankful", "ممتن"],
+      ],
+    ),
+    mid(
+      ["Optimistic", "متفائل"],
+      [
+        ["Hopeful", "مفعم بالأمل"],
+        ["Inspired", "ملهَم"],
+      ],
+    ),
+    mid(
+      ["Interested", "مهتم"],
+      [
+        ["Curious", "شغوف"],
+        ["Inquisitive", "متسائل"],
+      ],
+    ),
+    mid(
+      ["Accepted", "مقبول"],
+      [
+        ["Respected", "محترَم"],
+        ["Valued", "مقدَّر"],
+      ],
+    ),
+    mid(
+      ["Powerful", "قوي"],
+      [
+        ["Courageous", "شجاع"],
+        ["Creative", "مبدع"],
+      ],
+    ),
+    mid(
+      ["Trusting", "واثق بمن حولي"],
+      [
+        ["Sensitive", "مرهف"],
+        ["Intimate", "قريب"],
+      ],
+    ),
+    mid(
+      ["Playful", "مرِح"],
+      [
+        ["Cheeky", "مشاكس"],
+        ["Free", "حر"],
+      ],
+    ),
   ]),
   core("sad", ["Sad", "حزين"], "#378ADD", [
-    mid(["Lonely", "وحيد"], [["Isolated", "معزول"], ["Abandoned", "متروك"]]),
-    mid(["Hurt", "مجروح"], [["Disappointed", "خائب الأمل"], ["Embarrassed", "محرج"]]),
-    mid(["Guilty", "مذنب"], [["Ashamed", "خجِل من نفسي"], ["Remorseful", "نادم"]]),
-    mid(["Depressed", "مكتئب"], [["Empty", "فارغ"], ["Inferior", "أقل من الآخرين"]]),
-    mid(["Vulnerable", "هش"], [["Victimised", "مظلوم"], ["Fragile", "منكسر"]]),
-    mid(["Despair", "يائس"], [["Grief", "مكلوم"], ["Powerless", "عاجز"]]),
+    mid(
+      ["Lonely", "وحيد"],
+      [
+        ["Isolated", "معزول"],
+        ["Abandoned", "متروك"],
+      ],
+    ),
+    mid(
+      ["Hurt", "مجروح"],
+      [
+        ["Disappointed", "خائب الأمل"],
+        ["Embarrassed", "محرج"],
+      ],
+    ),
+    mid(
+      ["Guilty", "مذنب"],
+      [
+        ["Ashamed", "خجِل من نفسي"],
+        ["Remorseful", "نادم"],
+      ],
+    ),
+    mid(
+      ["Depressed", "مكتئب"],
+      [
+        ["Empty", "فارغ"],
+        ["Inferior", "أقل من الآخرين"],
+      ],
+    ),
+    mid(
+      ["Vulnerable", "هش"],
+      [
+        ["Victimised", "مظلوم"],
+        ["Fragile", "منكسر"],
+      ],
+    ),
+    mid(
+      ["Despair", "يائس"],
+      [
+        ["Grief", "مكلوم"],
+        ["Powerless", "عاجز"],
+      ],
+    ),
   ]),
   core("angry", ["Angry", "غاضب"], "#E24B4A", [
-    mid(["Frustrated", "محبَط"], [["Annoyed", "منزعج"], ["Infuriated", "مستشيط غضبًا"]]),
-    mid(["Let down", "مخذول"], [["Resentful", "مستاء"], ["Betrayed", "مخدوع"]]),
-    mid(["Humiliated", "مُهان"], [["Ridiculed", "موضع سخرية"], ["Disrespected", "غير محترَم"]]),
-    mid(["Bitter", "ممتعض"], [["Violated", "منتهَك"], ["Indignant", "ساخط"]]),
-    mid(["Mad", "حانق"], [["Jealous", "غيور"], ["Furious", "ثائر"]]),
-    mid(["Aggressive", "عدواني"], [["Hostile", "عدائي"], ["Provoked", "مستفَز"]]),
-    mid(["Distant", "منفصل"], [["Numb", "متبلّد"], ["Withdrawn", "منطوٍ"]]),
-    mid(["Critical", "ناقد"], [["Dismissive", "مستخِف"], ["Sceptical", "متشكك"]]),
+    mid(
+      ["Frustrated", "محبَط"],
+      [
+        ["Annoyed", "منزعج"],
+        ["Infuriated", "مستشيط غضبًا"],
+      ],
+    ),
+    mid(
+      ["Let down", "مخذول"],
+      [
+        ["Resentful", "مستاء"],
+        ["Betrayed", "مخدوع"],
+      ],
+    ),
+    mid(
+      ["Humiliated", "مُهان"],
+      [
+        ["Ridiculed", "موضع سخرية"],
+        ["Disrespected", "غير محترَم"],
+      ],
+    ),
+    mid(
+      ["Bitter", "ممتعض"],
+      [
+        ["Violated", "منتهَك"],
+        ["Indignant", "ساخط"],
+      ],
+    ),
+    mid(
+      ["Mad", "حانق"],
+      [
+        ["Jealous", "غيور"],
+        ["Furious", "ثائر"],
+      ],
+    ),
+    mid(
+      ["Aggressive", "عدواني"],
+      [
+        ["Hostile", "عدائي"],
+        ["Provoked", "مستفَز"],
+      ],
+    ),
+    mid(
+      ["Distant", "منفصل"],
+      [
+        ["Numb", "متبلّد"],
+        ["Withdrawn", "منطوٍ"],
+      ],
+    ),
+    mid(
+      ["Critical", "ناقد"],
+      [
+        ["Dismissive", "مستخِف"],
+        ["Sceptical", "متشكك"],
+      ],
+    ),
   ]),
   core("fearful", ["Fearful", "خائف"], "#D85A30", [
-    mid(["Anxious", "قلق"], [["Worried", "مهموم"], ["Overwhelmed", "مثقَل"]]),
-    mid(["Insecure", "مهزوز"], [["Inadequate", "غير كافٍ"], ["Inferior", "أقل من الآخرين"]]),
-    mid(["Scared", "مرتعب"], [["Frightened", "مذعور"], ["Helpless", "قليل الحيلة"]]),
-    mid(["Rejected", "مرفوض"], [["Excluded", "مستبعَد"], ["Persecuted", "مضطهَد"]]),
-    mid(["Threatened", "مهدَّد"], [["Nervous", "متوتر"], ["Exposed", "مكشوف"]]),
-    mid(["Weak", "ضعيف"], [["Worthless", "بلا قيمة"], ["Insignificant", "غير مهم"]]),
+    mid(
+      ["Anxious", "قلق"],
+      [
+        ["Worried", "مهموم"],
+        ["Overwhelmed", "مثقَل"],
+      ],
+    ),
+    mid(
+      ["Insecure", "مهزوز"],
+      [
+        ["Inadequate", "غير كافٍ"],
+        ["Inferior", "أقل من الآخرين"],
+      ],
+    ),
+    mid(
+      ["Scared", "مرتعب"],
+      [
+        ["Frightened", "مذعور"],
+        ["Helpless", "قليل الحيلة"],
+      ],
+    ),
+    mid(
+      ["Rejected", "مرفوض"],
+      [
+        ["Excluded", "مستبعَد"],
+        ["Persecuted", "مضطهَد"],
+      ],
+    ),
+    mid(
+      ["Threatened", "مهدَّد"],
+      [
+        ["Nervous", "متوتر"],
+        ["Exposed", "مكشوف"],
+      ],
+    ),
+    mid(
+      ["Weak", "ضعيف"],
+      [
+        ["Worthless", "بلا قيمة"],
+        ["Insignificant", "غير مهم"],
+      ],
+    ),
   ]),
   core("bad", ["Bad", "سيئ"], "#1D9E75", [
-    mid(["Stressed", "مضغوط"], [["Overwhelmed", "مثقَل"], ["Out of control", "فاقد السيطرة"]]),
-    mid(["Tired", "متعب"], [["Sleepy", "نعسان"], ["Unfocused", "مشتت"]]),
-    mid(["Busy", "مشغول"], [["Pressured", "تحت الضغط"], ["Rushed", "مستعجل"]]),
-    mid(["Bored", "ضجِر"], [["Indifferent", "غير مبالٍ"], ["Apathetic", "فاتر"]]),
+    mid(
+      ["Stressed", "مضغوط"],
+      [
+        ["Overwhelmed", "مثقَل"],
+        ["Out of control", "فاقد السيطرة"],
+      ],
+    ),
+    mid(
+      ["Tired", "متعب"],
+      [
+        ["Sleepy", "نعسان"],
+        ["Unfocused", "مشتت"],
+      ],
+    ),
+    mid(
+      ["Busy", "مشغول"],
+      [
+        ["Pressured", "تحت الضغط"],
+        ["Rushed", "مستعجل"],
+      ],
+    ),
+    mid(
+      ["Bored", "ضجِر"],
+      [
+        ["Indifferent", "غير مبالٍ"],
+        ["Apathetic", "فاتر"],
+      ],
+    ),
   ]),
   core("surprised", ["Surprised", "مندهش"], "#7F77DD", [
-    mid(["Excited", "متحمس"], [["Eager", "متلهف"], ["Energetic", "نشيط"]]),
-    mid(["Amazed", "مذهول"], [["Astonished", "مشدوه"], ["Awe", "مبهور"]]),
-    mid(["Confused", "مرتبك"], [["Perplexed", "حائر"], ["Disillusioned", "خائب الظن"]]),
-    mid(["Startled", "متفاجئ"], [["Shocked", "مصدوم"], ["Dismayed", "واجم"]]),
+    mid(
+      ["Excited", "متحمس"],
+      [
+        ["Eager", "متلهف"],
+        ["Energetic", "نشيط"],
+      ],
+    ),
+    mid(
+      ["Amazed", "مذهول"],
+      [
+        ["Astonished", "مشدوه"],
+        ["Awe", "مبهور"],
+      ],
+    ),
+    mid(
+      ["Confused", "مرتبك"],
+      [
+        ["Perplexed", "حائر"],
+        ["Disillusioned", "خائب الظن"],
+      ],
+    ),
+    mid(
+      ["Startled", "متفاجئ"],
+      [
+        ["Shocked", "مصدوم"],
+        ["Dismayed", "واجم"],
+      ],
+    ),
   ]),
   core("disgusted", ["Disgusted", "مشمئز"], "#888780", [
-    mid(["Disapproving", "مستنكِر"], [["Judgmental", "متحامل"], ["Embarrassed", "محرج"]]),
-    mid(["Disappointed", "خائب الأمل"], [["Appalled", "مستهجِن"], ["Revolted", "متقزز"]]),
-    mid(["Awful", "متكدّر"], [["Nauseated", "غثيان"], ["Detestable", "بغيض"]]),
-    mid(["Repelled", "نافر"], [["Horrified", "مروَّع"], ["Hesitant", "متردد"]]),
+    mid(
+      ["Disapproving", "مستنكِر"],
+      [
+        ["Judgmental", "متحامل"],
+        ["Embarrassed", "محرج"],
+      ],
+    ),
+    mid(
+      ["Disappointed", "خائب الأمل"],
+      [
+        ["Appalled", "مستهجِن"],
+        ["Revolted", "متقزز"],
+      ],
+    ),
+    mid(
+      ["Awful", "متكدّر"],
+      [
+        ["Nauseated", "غثيان"],
+        ["Detestable", "بغيض"],
+      ],
+    ),
+    mid(
+      ["Repelled", "نافر"],
+      [
+        ["Horrified", "مروَّع"],
+        ["Hesitant", "متردد"],
+      ],
+    ),
   ]),
 ];
 

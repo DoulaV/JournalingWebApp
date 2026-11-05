@@ -10,9 +10,14 @@ const r = await page.evaluate(async (key) => {
     const reg = await navigator.serviceWorker.ready;
     const pad = "=".repeat((4 - (key.length % 4)) % 4);
     const raw = atob((key + pad).replace(/-/g, "+").replace(/_/g, "/"));
-    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: Uint8Array.from(raw, c => c.charCodeAt(0)) });
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: Uint8Array.from(raw, (c) => c.charCodeAt(0)),
+    });
     return sub.endpoint;
-  } catch (e) { return "ERR " + e.name + ": " + e.message; }
+  } catch (e) {
+    return "ERR " + e.name + ": " + e.message;
+  }
 }, process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
 console.log(r);
 await browser.close();

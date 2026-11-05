@@ -1,6 +1,6 @@
 "use server";
 
-import { getPinHash, getProfileRow, setPinHash } from "@/lib/data/profile";
+import { getPinHash, getProfileRowAllowLocked, setPinHash } from "@/lib/data/profile";
 import {
   clearFails,
   failedAttempt,
@@ -15,7 +15,7 @@ import {
 
 export async function unlockAction(pin: string): Promise<{ ok: boolean; throttled?: boolean }> {
   if (await isThrottled()) return { ok: false, throttled: true };
-  const profile = await getProfileRow();
+  const profile = await getProfileRowAllowLocked();
   if (!profile.pin_hash) return { ok: true };
   if (!verifyPin(pin, profile.pin_hash)) {
     await failedAttempt();
@@ -29,7 +29,7 @@ export async function unlockAction(pin: string): Promise<{ ok: boolean; throttle
 
 /** Called while the user is active, extends the unlock window. */
 export async function heartbeatAction(): Promise<{ locked: boolean }> {
-  const profile = await getProfileRow();
+  const profile = await getProfileRowAllowLocked();
   if (!profile.pin_hash) return { locked: false };
   if (!(await isUnlocked())) return { locked: true };
   await grantUnlock(profile.lock_timeout_minutes);
@@ -48,7 +48,7 @@ export async function setPinAction(pin: string | null): Promise<{ ok: boolean }>
   }
   if (!isValidPin(pin)) return { ok: false };
   await setPinHash(hashPin(pin));
-  const profile = await getProfileRow();
+  const profile = await getProfileRowAllowLocked();
   await grantUnlock(profile.lock_timeout_minutes);
   return { ok: true };
 }

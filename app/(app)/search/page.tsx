@@ -9,7 +9,15 @@ import { EntryCard } from "@/components/ui/entry-card";
 
 export const metadata: Metadata = { title: "Search" };
 
-type SP = { q?: string; tag?: string; core?: string; from?: string; to?: string; photo?: string; audio?: string };
+type SP = {
+  q?: string;
+  tag?: string;
+  core?: string;
+  from?: string;
+  to?: string;
+  photo?: string;
+  audio?: string;
+};
 
 const input = "block min-h-11 w-full rounded-xl border border-border bg-surface px-3 text-base";
 
@@ -27,13 +35,28 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-6">
       <h1 className="font-serif text-3xl font-semibold">{t.search.title}</h1>
-      <form role="search" className="space-y-4 rounded-2xl border border-border bg-surface p-4" action="/search">
+      <form
+        role="search"
+        className="border-border bg-surface space-y-4 rounded-2xl border p-4"
+        action="/search"
+      >
         <div className="flex gap-2">
           <label htmlFor="q" className="sr-only">
             {t.search.placeholder}
           </label>
-          <input id="q" name="q" type="search" defaultValue={sp.q} placeholder={t.search.placeholder} dir="auto" className={input} />
-          <button type="submit" className="min-h-11 shrink-0 rounded-full bg-accent px-5 text-accent-text">
+          <input
+            id="q"
+            name="q"
+            type="search"
+            defaultValue={sp.q}
+            placeholder={t.search.placeholder}
+            dir="auto"
+            className={input}
+          />
+          <button
+            type="submit"
+            className="bg-accent text-accent-text min-h-11 shrink-0 rounded-full px-5"
+          >
             {t.search.submit}
           </button>
         </div>
@@ -79,11 +102,23 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </div>
         <div className="flex flex-wrap gap-4 text-sm">
           <label className="flex min-h-10 items-center gap-2">
-            <input type="checkbox" name="photo" value="1" defaultChecked={sp.photo === "1"} className="size-5 accent-[var(--accent)]" />
+            <input
+              type="checkbox"
+              name="photo"
+              value="1"
+              defaultChecked={sp.photo === "1"}
+              className="size-5 accent-[var(--accent)]"
+            />
             {t.search.hasPhoto}
           </label>
           <label className="flex min-h-10 items-center gap-2">
-            <input type="checkbox" name="audio" value="1" defaultChecked={sp.audio === "1"} className="size-5 accent-[var(--accent)]" />
+            <input
+              type="checkbox"
+              name="audio"
+              value="1"
+              defaultChecked={sp.audio === "1"}
+              className="size-5 accent-[var(--accent)]"
+            />
             {t.search.hasAudio}
           </label>
         </div>
@@ -92,10 +127,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       {!active ? (
         <p className="text-muted">{t.search.hint}</p>
       ) : results.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-6 text-center text-muted">{t.search.noResults}</p>
+        <p className="border-border text-muted rounded-2xl border border-dashed p-6 text-center">
+          {t.search.noResults}
+        </p>
       ) : (
         <section aria-live="polite" className="space-y-3">
-          <p className="text-sm text-muted">{fmt(t.search.results, { n: results.length })}</p>
+          <p className="text-muted text-sm">{fmt(t.search.results, { n: results.length })}</p>
           <ul className="space-y-3">
             {results.map((e) => (
               <li key={e.id}>

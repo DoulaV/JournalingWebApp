@@ -31,14 +31,23 @@ export async function sendToUser(
   payload: PushPayload,
 ): Promise<number> {
   if (!configure()) return 0;
-  const { data: subs } = await supabase.from("push_subscriptions").select("*").eq("user_id", userId);
+  const { data: subs } = await supabase
+    .from("push_subscriptions")
+    .select("*")
+    .eq("user_id", userId);
   let ok = 0;
   for (const s of subs ?? []) {
     const keys = s.keys as { p256dh: string; auth: string };
     try {
-      await webpush.sendNotification({ endpoint: s.endpoint, keys }, JSON.stringify(payload), { TTL: 60 * 60 * 6, urgency: "normal" });
+      await webpush.sendNotification({ endpoint: s.endpoint, keys }, JSON.stringify(payload), {
+        TTL: 60 * 60 * 6,
+        urgency: "normal",
+      });
       ok += 1;
-      await supabase.from("push_subscriptions").update({ last_used_at: new Date().toISOString() }).eq("id", s.id);
+      await supabase
+        .from("push_subscriptions")
+        .update({ last_used_at: new Date().toISOString() })
+        .eq("id", s.id);
     } catch (e) {
       const status = (e as { statusCode?: number }).statusCode;
       if (status === 404 || status === 410) {

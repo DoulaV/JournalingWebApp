@@ -9,7 +9,9 @@ async function latestLinkFor(email: string, after: number): Promise<string | nul
     const json = (await res.json()) as { messages: { ID: string; Created: string }[] };
     const msg = json.messages.find((m) => Date.parse(m.Created) >= after - 2000);
     if (msg) {
-      const full = (await (await fetch(`${MAILPIT}/api/v1/message/${msg.ID}`)).json()) as { HTML: string };
+      const full = (await (await fetch(`${MAILPIT}/api/v1/message/${msg.ID}`)).json()) as {
+        HTML: string;
+      };
       const m = full.HTML.match(/href="([^"]+auth\/confirm[^"]+)"/);
       if (m) return m[1].replace(/&amp;/g, "&");
     }

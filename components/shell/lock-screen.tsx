@@ -18,6 +18,7 @@ export function LockScreen({ t }: { t: Dict["lock"] }) {
     const r = await unlockAction(pin);
     setBusy(false);
     if (r.ok) {
+      router.replace("/today");
       router.refresh();
     } else {
       setError(true);
@@ -31,10 +32,10 @@ export function LockScreen({ t }: { t: Dict["lock"] }) {
       className="mx-auto flex min-h-dvh w-full max-w-xs flex-col justify-center px-6"
       data-testid="lock-screen"
     >
-      <div aria-hidden className="mx-auto mb-6 size-12 rounded-2xl bg-accent-soft" />
+      <div aria-hidden className="bg-accent-soft mx-auto mb-6 size-12 rounded-2xl" />
       <h1 className="text-center font-serif text-2xl font-semibold">{t.title}</h1>
       <form onSubmit={submit} className="mt-6 space-y-3">
-        <label htmlFor="pin" className="block text-center text-sm text-muted">
+        <label htmlFor="pin" className="text-muted block text-center text-sm">
           {t.enterPin}
         </label>
         <input
@@ -50,10 +51,10 @@ export function LockScreen({ t }: { t: Dict["lock"] }) {
           }}
           autoFocus
           dir="ltr"
-          className="block min-h-14 w-full rounded-2xl border border-border bg-surface text-center text-2xl tracking-[0.5em]"
+          className="border-border bg-surface block min-h-14 w-full rounded-2xl border text-center text-2xl tracking-[0.5em]"
         />
         {error && (
-          <p role="alert" className="text-center text-sm text-danger">
+          <p role="alert" className="text-danger text-center text-sm">
             {t.wrong}
           </p>
         )}
@@ -79,13 +80,13 @@ export function ActivityWatcher({ timeoutMinutes }: { timeoutMinutes: number }) 
       last.current = Date.now();
       if (Date.now() - lastBeat.current > 60_000) {
         lastBeat.current = Date.now();
-        void heartbeatAction().then((r) => r.locked && router.refresh());
+        void heartbeatAction().then((r) => r.locked && router.replace("/lock"));
       }
     };
     const check = async () => {
       if (Date.now() - last.current >= timeout) {
         await lockNowAction();
-        router.refresh();
+        router.replace("/lock");
       }
     };
     const events = ["pointerdown", "keydown", "scroll", "touchstart"] as const;

@@ -9,7 +9,10 @@ export type SaveStatus = "idle" | "saving" | "saved" | "offline" | "error";
 const IDLE_MS = 3000;
 
 /** Debounced autosave: local draft immediately, server after 3 seconds idle, and on blur. */
-export function useAutosave(date: string, onSaved?: (r: Extract<Awaited<ReturnType<typeof syncDraft>>, { ok: true }>) => void) {
+export function useAutosave(
+  date: string,
+  onSaved?: (r: Extract<Awaited<ReturnType<typeof syncDraft>>, { ok: true }>) => void,
+) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savedCb = useRef(onSaved);

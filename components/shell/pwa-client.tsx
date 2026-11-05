@@ -10,7 +10,9 @@ export function PwaClient({ t }: { t: Dict }) {
 
   useEffect(() => {
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
-      navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/", updateViaCache: "none" })
+        .catch(() => {});
     }
     const update = () => setOffline(!navigator.onLine);
     const online = () => {
@@ -31,7 +33,7 @@ export function PwaClient({ t }: { t: Dict }) {
   return (
     <div
       role="status"
-      className="no-print fixed inset-x-3 bottom-20 z-50 rounded-2xl bg-text px-4 py-3 text-center text-sm text-bg md:bottom-4 md:start-auto md:end-4 md:max-w-sm"
+      className="no-print bg-text text-bg fixed inset-x-3 bottom-20 z-50 rounded-2xl px-4 py-3 text-center text-sm md:start-auto md:end-4 md:bottom-4 md:max-w-sm"
     >
       {t.common.offline}
     </div>

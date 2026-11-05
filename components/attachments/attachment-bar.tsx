@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { Attachment } from "@/lib/data/types";
 import type { Dict } from "@/lib/i18n";
-import { browserClient } from "@/lib/data/clients/browser";
 import { compressImage } from "@/lib/image";
-import { addAttachmentAction, removeAttachmentAction, transcribeAction } from "@/app/(app)/attachment-actions";
+import {
+  addAttachmentAction,
+  removeAttachmentAction,
+  transcribeAction,
+} from "@/app/(app)/attachment-actions";
 
 interface Props {
   date: string;
@@ -39,12 +42,23 @@ export function AttachmentBar({ date, initial, t, onTranscript }: Props) {
     setError(null);
     setBusy(t.attachments.uploading);
     try {
+      // Loaded on demand so the Supabase client isn't part of the first page load.
+      const { browserClient } = await import("@/lib/data/clients/browser");
       const supabase = browserClient();
       const { data } = await supabase.auth.getUser();
       if (!data.user) throw new Error("signed out");
-      const ext = kind === "photo" ? "jpg" : mimeType.includes("mp4") ? "m4a" : mimeType.includes("ogg") ? "ogg" : "webm";
+      const ext =
+        kind === "photo"
+          ? "jpg"
+          : mimeType.includes("mp4")
+            ? "m4a"
+            : mimeType.includes("ogg")
+              ? "ogg"
+              : "webm";
       const path = `${data.user.id}/${date}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("attachments").upload(path, blob, { contentType: mimeType });
+      const { error: upErr } = await supabase.storage
+        .from("attachments")
+        .upload(path, blob, { contentType: mimeType });
       if (upErr) throw upErr;
       const att = await addAttachmentAction({
         date,
@@ -123,12 +137,19 @@ export function AttachmentBar({ date, initial, t, onTranscript }: Props) {
         <button
           type="button"
           onClick={() => fileInput.current?.click()}
-          className="min-h-10 rounded-full border border-border px-3 text-sm"
+          className="border-border min-h-10 rounded-full border px-3 text-sm"
           disabled={Boolean(busy)}
         >
           {t.attachments.photo}
         </button>
-        <input ref={fileInput} type="file" accept="image/*" className="hidden" onChange={onPhoto} aria-label={t.attachments.photo} />
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onPhoto}
+          aria-label={t.attachments.photo}
+        />
         <button
           type="button"
           onClick={toggleRecording}
@@ -138,8 +159,16 @@ export function AttachmentBar({ date, initial, t, onTranscript }: Props) {
         >
           {recording ? `● ${t.attachments.stop}` : t.attachments.voice}
         </button>
-        {busy && <span role="status" className="text-sm text-muted">{busy}</span>}
-        {error && <span role="alert" className="text-sm text-danger">{error}</span>}
+        {busy && (
+          <span role="status" className="text-muted text-sm">
+            {busy}
+          </span>
+        )}
+        {error && (
+          <span role="alert" className="text-danger text-sm">
+            {error}
+          </span>
+        )}
       </div>
       {items.length > 0 && <AttachmentList items={items} t={t} onRemove={remove} />}
     </div>
@@ -162,14 +191,23 @@ export function AttachmentList({
           {a.kind === "photo" ? (
             a.url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={a.url} alt={t.attachments.photoAlt} className="h-24 w-24 rounded-xl object-cover" loading="lazy" />
+              <img
+                src={a.url}
+                alt={t.attachments.photoAlt}
+                className="h-24 w-24 rounded-xl object-cover"
+                loading="lazy"
+              />
             ) : (
-              <span className="block h-24 w-24 rounded-xl bg-surface-2" />
+              <span className="bg-surface-2 block h-24 w-24 rounded-xl" />
             )
           ) : (
-            <div className="max-w-xs rounded-xl bg-surface-2 p-2">
+            <div className="bg-surface-2 max-w-xs rounded-xl p-2">
               {a.url && <audio controls preload="none" src={a.url} className="h-10 max-w-full" />}
-              {a.transcript && <p className="mt-1 line-clamp-2 text-xs text-muted" dir="auto">{a.transcript}</p>}
+              {a.transcript && (
+                <p className="text-muted mt-1 line-clamp-2 text-xs" dir="auto">
+                  {a.transcript}
+                </p>
+              )}
             </div>
           )}
           {onRemove && (
@@ -177,7 +215,7 @@ export function AttachmentList({
               type="button"
               onClick={() => onRemove(a.id)}
               aria-label={t.attachments.remove}
-              className="absolute -end-2 -top-2 flex size-8 items-center justify-center rounded-full border border-border bg-surface text-xs"
+              className="border-border bg-surface absolute -end-2 -top-2 flex size-8 items-center justify-center rounded-full border text-xs"
             >
               ✕
             </button>

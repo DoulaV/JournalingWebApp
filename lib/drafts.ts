@@ -65,7 +65,11 @@ export async function markSynced(date: string, updatedAt: number) {
   // never overwrite changes made elsewhere.
   if (cur && cur.updatedAt === updatedAt) {
     const { emotions: _e, moodValence: _m, tagIds: _t, ritual: _r, promptId: _p, ...rest } = cur;
-    void _e; void _m; void _t; void _r; void _p;
+    void _e;
+    void _m;
+    void _t;
+    void _r;
+    void _p;
     await set(date, { ...rest, synced: true }, s);
   }
 }

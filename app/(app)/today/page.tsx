@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getProfileRow, toProfile } from "@/lib/data/profile";
-import { firstEntryDate, getEntriesByDates, getEntryByDate, recentEmotionKeys } from "@/lib/data/entries";
+import {
+  firstEntryDate,
+  getEntriesByDates,
+  getEntryByDate,
+  recentEmotionKeys,
+} from "@/lib/data/entries";
 import { getStreak, unseenMilestones } from "@/lib/data/streaks";
 import { listTags } from "@/lib/data/tags";
 import { promptForToday } from "@/lib/data/prompts";
@@ -19,7 +24,11 @@ import { WEEKLY_REVIEW_PROMPT } from "@/lib/prompts";
 
 export const metadata: Metadata = { title: "Today" };
 
-export default async function TodayPage({ searchParams }: { searchParams: Promise<{ for?: string }> }) {
+export default async function TodayPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ for?: string }>;
+}) {
   const sp = await searchParams;
   const row = await getProfileRow();
   const profile = toProfile(row);
@@ -29,16 +38,17 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
   const { today, yesterday, graceOpen } = streakClock(now, profile.timezone);
   const hour = localHour(now, profile.timezone);
 
-  const [todayEntry, yesterdayEntry, streak, first, recents, tags, milestones, letters] = await Promise.all([
-    getEntryByDate(today),
-    graceOpen ? getEntryByDate(yesterday) : Promise.resolve(null),
-    getStreak(),
-    firstEntryDate(),
-    recentEmotionKeys(5),
-    listTags(),
-    unseenMilestones(),
-    readyLetterCount(),
-  ]);
+  const [todayEntry, yesterdayEntry, streak, first, recents, tags, milestones, letters] =
+    await Promise.all([
+      getEntryByDate(today),
+      graceOpen ? getEntryByDate(yesterday) : Promise.resolve(null),
+      getStreak(),
+      firstEntryDate(),
+      recentEmotionKeys(5),
+      listTags(),
+      unseenMilestones(),
+      readyLetterCount(),
+    ]);
 
   const backfilling = sp.for === "yesterday" && graceOpen && !yesterdayEntry;
   const date = backfilling ? yesterday : today;
@@ -48,30 +58,44 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
   const depth = emotionDepthForDay(journalDayNumber(first, today), profile.emotionDepthUnlocked);
   const prompt = entry && !backfilling ? await promptForToday() : null;
 
-  const pastDates = [addDays(today, -7), addMonths(today, -1), addMonths(today, -6), addMonths(today, -12)];
+  const pastDates = [
+    addDays(today, -7),
+    addMonths(today, -1),
+    addMonths(today, -6),
+    addMonths(today, -12),
+  ];
   const past = await getEntriesByDates(pastDates);
 
-  const greeting = hour < 12 ? t.today.greetingMorning : hour < 17 ? t.today.greetingAfternoon : t.today.greetingEvening;
+  const greeting =
+    hour < 12
+      ? t.today.greetingMorning
+      : hour < 17
+        ? t.today.greetingAfternoon
+        : t.today.greetingEvening;
   const suggestedRitual = hour < 12 ? "morning" : hour >= 17 ? "evening" : null;
   const isFriday = dayOfWeek(today) === 5;
 
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm text-muted">{formatDate(date, lang)}</p>
+        <p className="text-muted text-sm">{formatDate(date, lang)}</p>
         <h1 className="font-serif text-3xl font-semibold">
           {profile.displayName ? `${greeting}, ${profile.displayName}` : greeting}
         </h1>
-        {backfilling && <p className="mt-1 text-sm text-muted">{fmt(t.today.writingFor, { date: formatDate(date, lang) })}</p>}
+        {backfilling && (
+          <p className="text-muted mt-1 text-sm">
+            {fmt(t.today.writingFor, { date: formatDate(date, lang) })}
+          </p>
+        )}
       </header>
 
       {milestones.length > 0 && <Celebration milestone={Math.max(...milestones)} lang={lang} />}
 
       {canBackfill && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface-2 p-4">
+        <div className="bg-surface-2 flex flex-wrap items-center justify-between gap-3 rounded-2xl p-4">
           <div>
             <p className="font-medium">{t.today.backfillTitle}</p>
-            <p className="text-sm text-muted">{t.today.backfillHint}</p>
+            <p className="text-muted text-sm">{t.today.backfillHint}</p>
           </div>
           <Link href="/today?for=yesterday" className={buttonClass("secondary", "md")}>
             {t.today.backfillCta}
@@ -80,7 +104,7 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
       )}
 
       {letters > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-accent-soft p-4">
+        <div className="bg-accent-soft flex flex-wrap items-center justify-between gap-3 rounded-2xl p-4">
           <p className="font-medium">{t.today.lettersReady}</p>
           <Link href="/letters" className={buttonClass("primary", "md")}>
             {t.today.openLetter}

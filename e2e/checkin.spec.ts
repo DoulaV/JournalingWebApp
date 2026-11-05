@@ -27,7 +27,9 @@ test.describe("quick check-in", () => {
     await editor.press("End");
     await editor.press("Enter");
     await editor.pressSequentially("كان الصباح هادئا وجميلا.");
-    await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible({
+      timeout: 15_000,
+    });
 
     await page.reload();
     const ar = page.locator(".ProseMirror p", { hasText: "كان الصباح هادئا" });

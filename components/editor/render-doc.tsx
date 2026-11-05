@@ -3,7 +3,10 @@
 
 import type { ReactNode } from "react";
 
-interface Mark { type: string; attrs?: Record<string, unknown> }
+interface Mark {
+  type: string;
+  attrs?: Record<string, unknown>;
+}
 export interface DocNode {
   type: string;
   text?: string;
@@ -30,26 +33,54 @@ function renderNode(n: DocNode, key: number): ReactNode {
     case "doc":
       return <>{kids}</>;
     case "paragraph":
-      return <p key={key} dir="auto">{kids}</p>;
+      return (
+        <p key={key} dir="auto">
+          {kids}
+        </p>
+      );
     case "heading": {
       const level = Math.min(3, Math.max(1, Number(n.attrs?.level ?? 2)));
       const H = `h${level}` as "h1" | "h2" | "h3";
-      return <H key={key} dir="auto">{kids}</H>;
+      return (
+        <H key={key} dir="auto">
+          {kids}
+        </H>
+      );
     }
     case "bulletList":
-      return <ul key={key} dir="auto">{kids}</ul>;
+      return (
+        <ul key={key} dir="auto">
+          {kids}
+        </ul>
+      );
     case "orderedList":
-      return <ol key={key} dir="auto">{kids}</ol>;
+      return (
+        <ol key={key} dir="auto">
+          {kids}
+        </ol>
+      );
     case "listItem":
-      return <li key={key} dir="auto">{kids}</li>;
+      return (
+        <li key={key} dir="auto">
+          {kids}
+        </li>
+      );
     case "blockquote":
-      return <blockquote key={key} dir="auto">{kids}</blockquote>;
+      return (
+        <blockquote key={key} dir="auto">
+          {kids}
+        </blockquote>
+      );
     case "horizontalRule":
       return <hr key={key} />;
     case "hardBreak":
       return <br key={key} />;
     case "codeBlock":
-      return <pre key={key}><code>{kids}</code></pre>;
+      return (
+        <pre key={key}>
+          <code>{kids}</code>
+        </pre>
+      );
     case "text":
       return renderText(n, key);
     default:
@@ -63,7 +94,9 @@ export function RenderDoc({ doc, fallbackText }: { doc: unknown; fallbackText?: 
     return (
       <>
         {(fallbackText ?? "").split("\n").map((l, i) => (
-          <p key={i} dir="auto">{l}</p>
+          <p key={i} dir="auto">
+            {l}
+          </p>
         ))}
       </>
     );
@@ -98,7 +131,9 @@ export function docToMarkdown(doc: unknown, fallbackText = ""): string {
       case "blockquote":
         return (n.content ?? []).map((c) => block(c, "> ")).join("\n>\n");
       case "bulletList":
-        return (n.content ?? []).map((li) => `- ${(li.content ?? []).map((c) => block(c)).join("\n  ")}`).join("\n");
+        return (n.content ?? [])
+          .map((li) => `- ${(li.content ?? []).map((c) => block(c)).join("\n  ")}`)
+          .join("\n");
       case "orderedList":
         return (n.content ?? [])
           .map((li, i) => `${i + 1}. ${(li.content ?? []).map((c) => block(c)).join("\n   ")}`)

@@ -67,7 +67,9 @@ export function SettingsForm(props: Props) {
             defaultValue={p.displayName}
             dir="auto"
             maxLength={60}
-            onBlur={(e) => save({ display_name: e.target.value.trim() }, { displayName: e.target.value.trim() })}
+            onBlur={(e) =>
+              save({ display_name: e.target.value.trim() }, { displayName: e.target.value.trim() })
+            }
             className={inputClass}
           />
         </Field>
@@ -140,19 +142,31 @@ export function SettingsForm(props: Props) {
               document.documentElement.style.setProperty("--entry-size", `${v}px`);
               setP((cur) => ({ ...cur, fontSize: v }));
             }}
-            onPointerUp={(e) => save({ font_size: Number((e.target as HTMLInputElement).value) }, {})}
+            onPointerUp={(e) =>
+              save({ font_size: Number((e.target as HTMLInputElement).value) }, {})
+            }
             onKeyUp={(e) => save({ font_size: Number((e.target as HTMLInputElement).value) }, {})}
             className="h-11 w-full accent-[var(--accent)]"
           />
           <p className="entry-prose mt-2" dir="auto">
-            {p.language === "ar" ? "هكذا سيبدو نص تدويناتك." : "This is how your entries will look."}
+            {p.language === "ar"
+              ? "هكذا سيبدو نص تدويناتك."
+              : "This is how your entries will look."}
           </p>
         </Field>
       </Section>
 
       <Section title={s.habit}>
-        <Toggle label={s.showStreak} checked={p.showStreak} onChange={(v) => save({ show_streak: v }, { showStreak: v })} />
-        <Toggle label={s.showPrompts} checked={p.showPrompts} onChange={(v) => save({ show_prompts: v }, { showPrompts: v })} />
+        <Toggle
+          label={s.showStreak}
+          checked={p.showStreak}
+          onChange={(v) => save({ show_streak: v }, { showStreak: v })}
+        />
+        <Toggle
+          label={s.showPrompts}
+          checked={p.showPrompts}
+          onChange={(v) => save({ show_prompts: v }, { showPrompts: v })}
+        />
         <Toggle
           label={s.bodyCheck}
           checked={p.bodyCheckEnabled}
@@ -167,12 +181,18 @@ export function SettingsForm(props: Props) {
             ["2", s.depth2],
             ["3", s.depth3],
           ]}
-          onChange={(v) => save({ emotion_depth_unlocked: Number(v) }, { emotionDepthUnlocked: Number(v) })}
+          onChange={(v) =>
+            save({ emotion_depth_unlocked: Number(v) }, { emotionDepthUnlocked: Number(v) })
+          }
         />
       </Section>
 
       <Section title={s.reminders}>
-        <PushSettings t={t} configured={props.pushConfigured} vapidPublicKey={props.vapidPublicKey} />
+        <PushSettings
+          t={t}
+          configured={props.pushConfigured}
+          vapidPublicKey={props.vapidPublicKey}
+        />
         <Toggle
           label={s.remindersOn}
           checked={p.remindersEnabled}
@@ -184,7 +204,9 @@ export function SettingsForm(props: Props) {
               id="reminder_time"
               type="time"
               value={p.reminderTime}
-              onChange={(e) => save({ reminder_time: e.target.value }, { reminderTime: e.target.value })}
+              onChange={(e) =>
+                save({ reminder_time: e.target.value }, { reminderTime: e.target.value })
+              }
               className={inputClass}
             />
           </Field>
@@ -195,12 +217,21 @@ export function SettingsForm(props: Props) {
               placeholder={s.reminderAnchorPlaceholder}
               dir="auto"
               maxLength={60}
-              onBlur={(e) => save({ reminder_anchor: e.target.value.trim() }, { reminderAnchor: e.target.value.trim() })}
+              onBlur={(e) =>
+                save(
+                  { reminder_anchor: e.target.value.trim() },
+                  { reminderAnchor: e.target.value.trim() },
+                )
+              }
               className={inputClass}
             />
           </Field>
         </div>
-        <Toggle label={s.nudge} checked={p.nudgeEnabled} onChange={(v) => save({ nudge_enabled: v }, { nudgeEnabled: v })} />
+        <Toggle
+          label={s.nudge}
+          checked={p.nudgeEnabled}
+          onChange={(v) => save({ nudge_enabled: v }, { nudgeEnabled: v })}
+        />
         <Field label={s.nudgeTime} htmlFor="nudge_time">
           <input
             id="nudge_time"
@@ -220,7 +251,12 @@ export function SettingsForm(props: Props) {
             id="morning_time"
             type="time"
             value={p.morningReminderTime}
-            onChange={(e) => save({ morning_reminder_time: e.target.value }, { morningReminderTime: e.target.value })}
+            onChange={(e) =>
+              save(
+                { morning_reminder_time: e.target.value },
+                { morningReminderTime: e.target.value },
+              )
+            }
             className={inputClass}
           />
         </Field>
@@ -271,7 +307,7 @@ export function SettingsForm(props: Props) {
             )}
           </div>
           {pinMsg && (
-            <p role="status" className="text-sm text-muted">
+            <p role="status" className="text-muted text-sm">
               {pinMsg}
             </p>
           )}
@@ -305,7 +341,11 @@ export function SettingsForm(props: Props) {
       <Section title={s.features}>
         <Toggle
           label={s.transcription}
-          hint={transcriptionAvailable ? s.transcriptionHint : `${s.transcriptionHint} ${s.transcriptionUnavailable}`}
+          hint={
+            transcriptionAvailable
+              ? s.transcriptionHint
+              : `${s.transcriptionHint} ${s.transcriptionUnavailable}`
+          }
           checked={p.transcriptionEnabled}
           disabled={!transcriptionAvailable}
           onChange={(v) => save({ transcription_enabled: v }, { transcriptionEnabled: v })}
@@ -347,11 +387,14 @@ export function SettingsForm(props: Props) {
               className={inputClass}
             />
           </Field>
-          <a href={`/print?from=${range.from}&to=${range.to}`} className={buttonClass("secondary", "md")}>
+          <a
+            href={`/print?from=${range.from}&to=${range.to}`}
+            className={buttonClass("secondary", "md")}
+          >
             {s.exportPdf}
           </a>
         </div>
-        <p className="text-sm text-muted">{s.backups}</p>
+        <p className="text-muted text-sm">{s.backups}</p>
         <BackupButton t={t} />
       </Section>
     </div>
@@ -362,11 +405,24 @@ function fmtUnlock(t: Dict, n: number) {
   return t.rewards.unlockedAt.replace("{n}", String(n));
 }
 
-const inputClass = "block min-h-11 w-full rounded-xl border border-border bg-surface px-3 text-base";
+const inputClass =
+  "block min-h-11 w-full rounded-xl border border-border bg-surface px-3 text-base";
 
-function Section({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
+function Section({
+  title,
+  children,
+  id,
+}: {
+  title: string;
+  children: React.ReactNode;
+  id?: string;
+}) {
   return (
-    <section id={id} aria-labelledby={`${title}-h`} className="space-y-4 rounded-2xl border border-border bg-surface p-5">
+    <section
+      id={id}
+      aria-labelledby={`${title}-h`}
+      className="border-border bg-surface space-y-4 rounded-2xl border p-5"
+    >
       <h2 id={`${title}-h`} className="text-lg font-semibold">
         {title}
       </h2>
@@ -375,7 +431,15 @@ function Section({ title, children, id }: { title: string; children: React.React
   );
 }
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1">
       <label htmlFor={htmlFor} className="block text-sm font-medium">
@@ -403,7 +467,7 @@ function Toggle({
     <label className="flex min-h-11 cursor-pointer items-start justify-between gap-4">
       <span>
         <span className="block">{label}</span>
-        {hint && <span className="mt-0.5 block text-sm text-muted">{hint}</span>}
+        {hint && <span className="text-muted mt-0.5 block text-sm">{hint}</span>}
       </span>
       <input
         type="checkbox"
@@ -435,7 +499,7 @@ function Choice({
   return (
     <fieldset>
       <legend className="text-sm font-medium">{legend}</legend>
-      {hint && <p className="mt-0.5 text-sm text-muted">{hint}</p>}
+      {hint && <p className="text-muted mt-0.5 text-sm">{hint}</p>}
       <div className="mt-2 flex flex-wrap gap-2">
         {options.map(([v, l]) => (
           <label
@@ -475,7 +539,7 @@ function PasskeyButton({ t }: { t: Dict }) {
         {t.settings.addPasskey}
       </Button>
       {msg && (
-        <p role="status" className="mt-2 text-sm text-muted">
+        <p role="status" className="text-muted mt-2 text-sm">
           {msg}
         </p>
       )}
@@ -501,7 +565,7 @@ function BackupButton({ t }: { t: Dict }) {
         {busy ? t.common.saving : t.settings.backupNow}
       </Button>
       {msg && (
-        <p role="status" className="mt-2 text-sm text-muted">
+        <p role="status" className="text-muted mt-2 text-sm">
           {msg}
         </p>
       )}

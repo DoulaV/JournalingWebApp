@@ -39,9 +39,18 @@ export async function openLetter(id: string) {
   const { data } = await supabase.from("future_letters").select("*").eq("id", id).maybeSingle();
   if (!data) return null;
   if (!data.opened_at) {
-    await supabase.from("future_letters").update({ opened_at: new Date().toISOString() }).eq("id", id);
+    await supabase
+      .from("future_letters")
+      .update({ opened_at: new Date().toISOString() })
+      .eq("id", id);
   }
-  return { id: data.id, title: data.title, body: data.body, sealedUntil: data.sealed_until, createdAt: data.created_at };
+  return {
+    id: data.id,
+    title: data.title,
+    body: data.body,
+    sealedUntil: data.sealed_until,
+    createdAt: data.created_at,
+  };
 }
 
 export async function createLetter(input: { title: string; body: string; sealedUntil: string }) {

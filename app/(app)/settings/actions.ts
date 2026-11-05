@@ -39,7 +39,11 @@ export async function updateSettingsAction(patch: SettingsPatch) {
   const clean = settingsSchema.parse(patch);
   await updateProfile(clean);
   if (clean.language) {
-    (await cookies()).set("lang", clean.language, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+    (await cookies()).set("lang", clean.language, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
   }
   revalidatePath("/", "layout");
   return { ok: true as const };

@@ -9,8 +9,7 @@ import { isValidPath, isCoreId } from "@/lib/emotions";
 import { isDateStr, type DateStr } from "@/lib/dates";
 import { streakClock } from "@/lib/streak";
 
-const ENTRY_SELECT =
-  "*, entry_emotions(*), entry_tags(tag_id), attachments(*)" as const;
+const ENTRY_SELECT = "*, entry_emotions(*), entry_tags(tag_id), attachments(*)" as const;
 
 type RawEntry = Awaited<ReturnType<typeof fetchRaw>>[number];
 
@@ -29,15 +28,13 @@ function toEntry(r: RawEntry): Entry {
   const emotions = [...(r.entry_emotions ?? [])]
     .sort((a, b) => a.position - b.position)
     .filter((e) => isCoreId(e.core))
-    .map(
-      (e): EmotionInput => ({
-        core: e.core as EmotionInput["core"],
-        middle: e.middle,
-        precise: e.precise,
-        intensity: e.intensity,
-        bodyLocation: e.body_location,
-      }),
-    );
+    .map((e): EmotionInput => ({
+      core: e.core as EmotionInput["core"],
+      middle: e.middle,
+      precise: e.precise,
+      intensity: e.intensity,
+      bodyLocation: e.body_location,
+    }));
   const attachments: Attachment[] = (r.attachments ?? []).map((a) => ({
     id: a.id,
     kind: a.kind as Attachment["kind"],
@@ -77,7 +74,9 @@ export async function getEntriesByDates(dates: DateStr[]): Promise<Entry[]> {
   return rows.map(toEntry);
 }
 
-export async function listEntries(opts: { limit?: number; before?: DateStr } = {}): Promise<Entry[]> {
+export async function listEntries(
+  opts: { limit?: number; before?: DateStr } = {},
+): Promise<Entry[]> {
   await requireUser();
   const limit = Math.min(opts.limit ?? 30, 200);
   const rows = await fetchRaw((q) => {
@@ -147,7 +146,9 @@ export async function saveEntry(input: SaveEntryInput) {
   // An offline draft started earlier may still count for the day it was started,
   // as long as it was started when that day was writable (and within 3 days).
   const started =
-    input.clientCreatedAt && input.clientCreatedAt < now.getTime() && now.getTime() - input.clientCreatedAt < 3 * 86_400_000
+    input.clientCreatedAt &&
+    input.clientCreatedAt < now.getTime() &&
+    now.getTime() - input.clientCreatedAt < 3 * 86_400_000
       ? new Date(input.clientCreatedAt)
       : now;
   if (
@@ -171,7 +172,8 @@ export async function saveEntry(input: SaveEntryInput) {
     word_count: countWords(bodyText),
     ...(input.moodValence !== undefined ? { mood_valence: valence } : {}),
     ...(input.promptId !== undefined ? { prompt_id: input.promptId } : {}),
-    ritual: existing?.ritual && existing.ritual !== "free" ? existing.ritual : (input.ritual ?? "free"),
+    ritual:
+      existing?.ritual && existing.ritual !== "free" ? existing.ritual : (input.ritual ?? "free"),
     ...(!existing
       ? { is_backfilled: input.date < streakClock(started, profile.timezone).today }
       : {}),
@@ -225,8 +227,12 @@ export async function deleteEntry(date: DateStr) {
   const supabase = await serverClient();
   const { data } = await supabase.from("entries").select("id").eq("entry_date", date).maybeSingle();
   if (!data) return;
-  const { data: files } = await supabase.from("attachments").select("storage_path").eq("entry_id", data.id);
-  if (files?.length) await supabase.storage.from("attachments").remove(files.map((f) => f.storage_path));
+  const { data: files } = await supabase
+    .from("attachments")
+    .select("storage_path")
+    .eq("entry_id", data.id);
+  if (files?.length)
+    await supabase.storage.from("attachments").remove(files.map((f) => f.storage_path));
   await supabase.from("entries").delete().eq("id", data.id);
   await recomputeStreakFor(supabase, user.id, profile.timezone, new Date());
 }

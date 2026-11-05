@@ -94,7 +94,13 @@ export async function getStreak(): Promise<StreakSummary> {
   const supabase = await serverClient();
   const dates = await validEntryDates(supabase, user.id);
   const s = computeStreak({ writtenDates: dates, now: new Date(), timeZone: profile.timezone });
-  return { current: s.current, longest: s.longest, total: s.total, freezes: s.freezes, atRisk: s.atRisk };
+  return {
+    current: s.current,
+    longest: s.longest,
+    total: s.total,
+    freezes: s.freezes,
+    atRisk: s.atRisk,
+  };
 }
 
 /** Milestone events not yet celebrated. */

@@ -16,7 +16,8 @@ type State = "loading" | "unsupported" | "ios-install" | "denied" | "off" | "on"
 async function detectPushState(): Promise<State> {
   const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const standalone =
-    window.matchMedia("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone;
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (navigator as { standalone?: boolean }).standalone;
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
     return ios && !standalone ? "ios-install" : "unsupported";
   }
@@ -26,7 +27,15 @@ async function detectPushState(): Promise<State> {
   return sub ? "on" : "off";
 }
 
-export function PushSettings({ t, configured, vapidPublicKey }: { t: Dict; configured: boolean; vapidPublicKey: string }) {
+export function PushSettings({
+  t,
+  configured,
+  vapidPublicKey,
+}: {
+  t: Dict;
+  configured: boolean;
+  vapidPublicKey: string;
+}) {
   const s = t.settings;
   const [state, setState] = useState<State>("loading");
   const [msg, setMsg] = useState<string | null>(null);
@@ -43,7 +52,9 @@ export function PushSettings({ t, configured, vapidPublicKey }: { t: Dict; confi
         setState("denied");
         return;
       }
-      const reg = (await navigator.serviceWorker.getRegistration()) ?? (await navigator.serviceWorker.register("/sw.js"));
+      const reg =
+        (await navigator.serviceWorker.getRegistration()) ??
+        (await navigator.serviceWorker.register("/sw.js"));
       await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
@@ -67,7 +78,7 @@ export function PushSettings({ t, configured, vapidPublicKey }: { t: Dict; confi
   }
 
   return (
-    <div className="space-y-2 rounded-xl bg-surface-2 p-4 text-sm">
+    <div className="bg-surface-2 space-y-2 rounded-xl p-4 text-sm">
       {!configured ? (
         <p>{s.pushUnsupported}</p>
       ) : state === "ios-install" ? (

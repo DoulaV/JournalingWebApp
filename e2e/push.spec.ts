@@ -11,7 +11,10 @@ import { admin, resetUserData } from "./helpers";
 test("cron sends one due reminder through Web Push", async ({ request }) => {
   const userId = await resetUserData();
   const received: { headers: http.IncomingHttpHeaders; size: number }[] = [];
-  const tls = { key: fs.readFileSync("e2e/fixtures/localhost.key"), cert: fs.readFileSync("e2e/fixtures/localhost.crt") };
+  const tls = {
+    key: fs.readFileSync("e2e/fixtures/localhost.key"),
+    cert: fs.readFileSync("e2e/fixtures/localhost.crt"),
+  };
   const server = https.createServer(tls, (req, res) => {
     let size = 0;
     req.on("data", (c: Buffer) => (size += c.length));
@@ -30,11 +33,19 @@ test("cron sends one due reminder through Web Push", async ({ request }) => {
     await a.from("push_subscriptions").insert({
       user_id: userId,
       endpoint: "https://localhost:9911/push/test-device",
-      keys: { p256dh: ecdh.getPublicKey().toString("base64url"), auth: crypto.randomBytes(16).toString("base64url") },
+      keys: {
+        p256dh: ecdh.getPublicKey().toString("base64url"),
+        auth: crypto.randomBytes(16).toString("base64url"),
+      },
       device_label: "test",
     });
     const now = new Date(Date.now() - 60_000);
-    const hhmm = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dubai", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now);
+    const hhmm = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Dubai",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    }).format(now);
     await a
       .from("profiles")
       .update({

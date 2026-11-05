@@ -8,7 +8,11 @@ import { markMilestonesSeen } from "@/lib/data/streaks";
 import { nextPromptForToday } from "@/lib/data/prompts";
 
 export type SaveResult =
-  | { ok: true; savedAt: string; streak: { current: number; longest: number; total: number; freezes: number; atRisk: boolean } }
+  | {
+      ok: true;
+      savedAt: string;
+      streak: { current: number; longest: number; total: number; freezes: number; atRisk: boolean };
+    }
   | { ok: false; reason: "date" | "error" };
 
 export async function saveEntryAction(input: SaveEntryInput): Promise<SaveResult> {

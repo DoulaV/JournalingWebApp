@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { serverClient } from "./clients/server";
 import type { Profile, ProfileRow } from "./types";
-import { requireUser } from "./auth";
+import { requireUser, requireUserAllowLocked } from "./auth";
 
 export function toProfile(r: ProfileRow): Profile {
   return {
@@ -31,8 +31,8 @@ export function toProfile(r: ProfileRow): Profile {
 }
 
 /** Loads the profile, creating it if the signup trigger has not run (defensive). */
-export const getProfileRow = cache(async (): Promise<ProfileRow> => {
-  const user = await requireUser();
+const loadProfileRow = cache(async (userId: string): Promise<ProfileRow> => {
+  const user = { id: userId };
   const supabase = await serverClient();
   const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle();
   if (data) return data;
@@ -44,6 +44,17 @@ export const getProfileRow = cache(async (): Promise<ProfileRow> => {
   if (error || !created) throw new Error(`Could not create profile: ${error?.message}`);
   return created;
 });
+
+export async function getProfileRow(): Promise<ProfileRow> {
+  const user = await requireUser();
+  return loadProfileRow(user.id);
+}
+
+/** Profile for the lock screen and PIN actions, available while locked. */
+export async function getProfileRowAllowLocked(): Promise<ProfileRow> {
+  const user = await requireUserAllowLocked();
+  return loadProfileRow(user.id);
+}
 
 export async function getProfile(): Promise<Profile> {
   return toProfile(await getProfileRow());
@@ -63,7 +74,10 @@ export async function updateProfile(patch: ProfilePatch) {
 export async function setPinHash(hash: string | null) {
   const user = await requireUser();
   const supabase = await serverClient();
-  const { error } = await supabase.from("profiles").update({ pin_hash: hash }).eq("user_id", user.id);
+  const { error } = await supabase
+    .from("profiles")
+    .update({ pin_hash: hash })
+    .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 }
 

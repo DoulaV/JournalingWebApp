@@ -31,7 +31,17 @@ interface Props {
   onSaved: (r: CheckInResult) => void;
 }
 
-export function CheckIn({ date, depth, recents, tags, lang, t, bodyCheck, ritual, onSaved }: Props) {
+export function CheckIn({
+  date,
+  depth,
+  recents,
+  tags,
+  lang,
+  t,
+  bodyCheck,
+  ritual,
+  onSaved,
+}: Props) {
   const [step, setStep] = useState<"feel" | "why">("feel");
   const [value, setValue] = useState<PickerValue>({ emotions: [], moodValence: null });
   const [line, setLine] = useState("");
@@ -63,7 +73,13 @@ export function CheckIn({ date, depth, recents, tags, lang, t, bodyCheck, ritual
       setError(t.common.errorShort);
       return;
     }
-    onSaved({ emotions: value.emotions, moodValence: value.moodValence, line: text, tagIds, synced: r.ok });
+    onSaved({
+      emotions: value.emotions,
+      moodValence: value.moodValence,
+      line: text,
+      tagIds,
+      synced: r.ok,
+    });
   }
 
   return (
@@ -86,7 +102,12 @@ export function CheckIn({ date, depth, recents, tags, lang, t, bodyCheck, ritual
             bodyCheck={bodyCheck}
           />
           <div className="sticky bottom-20 z-10 pt-2 md:bottom-4">
-            <Button size="lg" className="w-full shadow-sm" disabled={!hasFeeling} onClick={() => setStep("why")}>
+            <Button
+              size="lg"
+              className="w-full shadow-sm"
+              disabled={!hasFeeling}
+              onClick={() => setStep("why")}
+            >
               {t.common.next}
             </Button>
           </div>
@@ -96,9 +117,12 @@ export function CheckIn({ date, depth, recents, tags, lang, t, bodyCheck, ritual
           <button
             type="button"
             onClick={() => setStep("feel")}
-            className="flex min-h-10 items-center gap-1 text-sm text-muted"
+            className="text-muted flex min-h-10 items-center gap-1 text-sm"
           >
-            <span aria-hidden className="inline-block rtl:rotate-180">←</span> {t.common.back}
+            <span aria-hidden className="inline-block rtl:rotate-180">
+              ←
+            </span>{" "}
+            {t.common.back}
           </button>
           <h2 id="checkin-title" className="font-serif text-2xl font-semibold">
             <label htmlFor="checkin-line">{t.checkin.stepWhy}</label>
@@ -114,16 +138,22 @@ export function CheckIn({ date, depth, recents, tags, lang, t, bodyCheck, ritual
             dir="auto"
             autoFocus
             placeholder={t.checkin.whyPlaceholder}
-            className="entry-prose block w-full resize-none rounded-2xl border border-border bg-surface p-4"
+            className="entry-prose border-border bg-surface block w-full resize-none rounded-2xl border p-4"
           />
-          <TagPicker tags={tags} value={tagIds} onChange={setTagIds} lang={lang} label={`${t.checkin.stepTags} (${t.common.optional})`} />
+          <TagPicker
+            tags={tags}
+            value={tagIds}
+            onChange={setTagIds}
+            lang={lang}
+            label={`${t.checkin.stepTags} (${t.common.optional})`}
+          />
           <Button size="lg" className="w-full" onClick={save} disabled={busy || !hasLine}>
             {busy ? t.common.saving : t.checkin.save}
           </Button>
         </>
       )}
       {error && (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="text-danger text-sm">
           {error}
         </p>
       )}

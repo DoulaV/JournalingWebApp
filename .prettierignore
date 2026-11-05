@@ -6,3 +6,6 @@ lib/data/database.types.ts
 playwright-report
 test-results
 CLAUDE.md
+public/sw.js
+supabase/config.toml
+*.md

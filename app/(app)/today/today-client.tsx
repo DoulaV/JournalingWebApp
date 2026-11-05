@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckIn } from "@/components/today/check-in";
-import { EntryEditor } from "@/components/editor/entry-editor";
+import dynamic from "next/dynamic";
 import { EmotionPicker, type PickerValue } from "@/components/emotion-picker/emotion-picker";
 import { TagPicker } from "@/components/tags/tag-picker";
 import { AttachmentBar } from "@/components/attachments/attachment-bar";
@@ -17,6 +17,15 @@ import { textToDoc } from "@/lib/data/entry-utils";
 import { RITUAL_PROMPTS } from "@/lib/prompts";
 import { anotherPromptAction } from "../actions";
 import { setFontSizeAction } from "../settings/actions";
+
+// The editor bundle (TipTap) loads as its own chunk so the page is usable sooner.
+const EntryEditor = dynamic(
+  () => import("@/components/editor/entry-editor").then((m) => m.EntryEditor),
+  {
+    ssr: false,
+    loading: () => <div className="min-h-[calc(40vh+13rem)]" aria-hidden />,
+  },
+);
 
 interface Props {
   date: string;
@@ -38,7 +47,19 @@ interface Props {
 type Mode = "checkin" | "saved" | "write" | "done";
 
 export function TodayClient(props: Props) {
-  const { date, lang, t, entry, depth, recents, tags, bodyCheck, suggestedRitual, weeklyPrompt, isBackfill } = props;
+  const {
+    date,
+    lang,
+    t,
+    entry,
+    depth,
+    recents,
+    tags,
+    bodyCheck,
+    suggestedRitual,
+    weeklyPrompt,
+    isBackfill,
+  } = props;
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(entry ? "write" : "checkin");
   const [initial, setInitial] = useState({
@@ -95,7 +116,12 @@ export function TodayClient(props: Props) {
         bodyCheck={bodyCheck}
         ritual={suggestedRitual ?? "free"}
         onSaved={(r) => {
-          setInitial({ title: "", body: textToDoc(r.line), bodyText: r.line, updatedAt: new Date().toISOString() });
+          setInitial({
+            title: "",
+            body: textToDoc(r.line),
+            bodyText: r.line,
+            updatedAt: new Date().toISOString(),
+          });
           setFeelings({ emotions: r.emotions, moodValence: r.moodValence });
           setTagIds(r.tagIds);
           setMode("saved");
@@ -107,11 +133,22 @@ export function TodayClient(props: Props) {
 
   if (mode === "saved" || mode === "done") {
     return (
-      <section className="animate-bloom rounded-2xl border border-border bg-surface p-6 text-center" data-testid="checkin-saved">
-        <div aria-hidden className="animate-halo mx-auto mb-4 size-12 rounded-full bg-accent-soft" />
+      <section
+        className="animate-bloom border-border bg-surface rounded-2xl border p-6 text-center"
+        data-testid="checkin-saved"
+      >
+        <div
+          aria-hidden
+          className="animate-halo bg-accent-soft mx-auto mb-4 size-12 rounded-full"
+        />
         <h2 className="font-serif text-2xl font-semibold">{t.checkin.savedTitle}</h2>
-        {mode === "saved" && <p className="mt-2 text-muted">{t.checkin.savedBody}</p>}
-        <FeelingChips emotions={feelings.emotions} lang={lang} t={t} valence={feelings.moodValence} />
+        {mode === "saved" && <p className="text-muted mt-2">{t.checkin.savedBody}</p>}
+        <FeelingChips
+          emotions={feelings.emotions}
+          lang={lang}
+          t={t}
+          valence={feelings.moodValence}
+        />
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Button size="lg" onClick={() => setMode("write")}>
             {t.today.keepWriting}
@@ -143,14 +180,14 @@ export function TodayClient(props: Props) {
 
   const promptNode =
     prompt && !promptHidden ? (
-      <aside className="mb-5 rounded-2xl bg-surface-2 p-4" aria-label="prompt" data-testid="prompt">
+      <aside className="bg-surface-2 mb-5 rounded-2xl p-4" aria-label="prompt" data-testid="prompt">
         <p className="font-serif text-lg" dir="auto">
           {prompt.text}
         </p>
         <div className="mt-2 flex gap-2 text-sm">
           <button
             type="button"
-            className="min-h-9 rounded-full px-2 text-muted underline-offset-4 hover:underline"
+            className="text-muted inline-flex min-h-11 items-center rounded-full px-3 underline-offset-4 hover:underline"
             onClick={async () => {
               const p = await anotherPromptAction(prompt.id);
               if (p) setPrompt({ id: p.id, text: p[lang] });
@@ -160,21 +197,21 @@ export function TodayClient(props: Props) {
           </button>
           <button
             type="button"
-            className="min-h-9 rounded-full px-2 text-muted underline-offset-4 hover:underline"
+            className="text-muted inline-flex min-h-11 items-center rounded-full px-3 underline-offset-4 hover:underline"
             onClick={() => setPromptHidden(true)}
           >
             {t.today.dismissPrompt}
           </button>
         </div>
         {weeklyPrompt && (
-          <p className="mt-3 border-t border-border pt-3 text-sm" dir="auto">
+          <p className="border-border mt-3 border-t pt-3 text-sm" dir="auto">
             <span className="font-medium">{t.today.weeklyReview}: </span>
             {weeklyPrompt}
           </p>
         )}
       </aside>
     ) : weeklyPrompt ? (
-      <aside className="mb-5 rounded-2xl bg-surface-2 p-4 text-sm" dir="auto">
+      <aside className="bg-surface-2 mb-5 rounded-2xl p-4 text-sm" dir="auto">
         <span className="font-medium">{t.today.weeklyReview}: </span>
         {weeklyPrompt}
       </aside>
@@ -182,12 +219,12 @@ export function TodayClient(props: Props) {
 
   return (
     <div className="space-y-5" data-testid="today-write">
-      <section className="rounded-2xl border border-border bg-surface p-4">
+      <section className="border-border bg-surface rounded-2xl border p-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-medium text-muted">{t.today.emotionsToday}</h2>
+          <h2 className="text-muted text-sm font-medium">{t.today.emotionsToday}</h2>
           <button
             type="button"
-            className="min-h-9 rounded-full px-3 text-sm hover:bg-surface-2"
+            className="hover:bg-surface-2 min-h-9 rounded-full px-3 text-sm"
             aria-expanded={editingFeelings}
             onClick={() => setEditingFeelings((v) => !v)}
           >
@@ -200,7 +237,10 @@ export function TodayClient(props: Props) {
               value={feelings}
               onChange={(v) => {
                 setFeelings(v);
-                saveMeta({ emotions: v.emotions, moodValence: v.emotions.length ? null : v.moodValence });
+                saveMeta({
+                  emotions: v.emotions,
+                  moodValence: v.emotions.length ? null : v.moodValence,
+                });
               }}
               depth={depth}
               recents={recents}
@@ -220,7 +260,13 @@ export function TodayClient(props: Props) {
             />
           </div>
         ) : (
-          <FeelingChips emotions={feelings.emotions} lang={lang} t={t} valence={feelings.moodValence} align="start" />
+          <FeelingChips
+            emotions={feelings.emotions}
+            lang={lang}
+            t={t}
+            valence={feelings.moodValence}
+            align="start"
+          />
         )}
       </section>
 
@@ -273,14 +319,21 @@ export function FeelingChips({
   return (
     <ul className={`mt-3 flex flex-wrap gap-2 ${align === "center" ? "justify-center" : ""}`}>
       {emotions.map((e) => (
-        <li key={pathKey(e)} className="flex min-h-9 items-center gap-2 rounded-full bg-surface-2 px-3 text-sm">
-          <span aria-hidden className="size-2.5 rounded-full" style={{ background: getCore(e.core).color }} />
+        <li
+          key={pathKey(e)}
+          className="bg-surface-2 flex min-h-9 items-center gap-2 rounded-full px-3 text-sm"
+        >
+          <span
+            aria-hidden
+            className="size-2.5 rounded-full"
+            style={{ background: getCore(e.core).color }}
+          />
           {breadcrumb(e, lang).join(" › ")}
           <span className="text-muted">· {e.intensity}/5</span>
         </li>
       ))}
       {!emotions.length && valence != null && (
-        <li className="min-h-9 rounded-full bg-surface-2 px-3 py-2 text-sm">
+        <li className="bg-surface-2 min-h-9 rounded-full px-3 py-2 text-sm">
           {t.picker.notSure} · {valence}/5
         </li>
       )}

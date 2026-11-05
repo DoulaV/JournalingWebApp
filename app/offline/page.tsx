@@ -8,9 +8,9 @@ export default async function OfflinePage() {
   const t = getDict(lang);
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6 text-center">
-      <div aria-hidden className="mx-auto mb-6 size-12 rounded-2xl bg-accent-soft" />
+      <div aria-hidden className="bg-accent-soft mx-auto mb-6 size-12 rounded-2xl" />
       <h1 className="font-serif text-2xl font-semibold">{t.offlinePage.title}</h1>
-      <p className="mt-3 text-muted">{t.offlinePage.body}</p>
+      <p className="text-muted mt-3">{t.offlinePage.body}</p>
     </main>
   );
 }

@@ -22,12 +22,15 @@ function showAll(ids: string[], n: number): PromptHistoryItem[] {
   return ids.map((promptId) => ({ promptId, shownOn: daysAgo(n) }));
 }
 
-const ids = (pred: (p: (typeof PROMPTS)[number]) => boolean) => PROMPTS.filter(pred).map((p) => p.id);
+const ids = (pred: (p: (typeof PROMPTS)[number]) => boolean) =>
+  PROMPTS.filter(pred).map((p) => p.id);
 
 describe("prompt content", () => {
   it("has enough prompts per core and general", () => {
     for (const core of CORE_IDS) {
-      expect(PROMPTS.filter((p) => p.category === core && !p.middle).length).toBeGreaterThanOrEqual(8);
+      expect(PROMPTS.filter((p) => p.category === core && !p.middle).length).toBeGreaterThanOrEqual(
+        8,
+      );
     }
     expect(PROMPTS.filter((p) => p.category === "general").length).toBeGreaterThanOrEqual(15);
   });
@@ -69,7 +72,9 @@ describe("prompt content", () => {
       PROMPTS.some((p) => p.category === category && p.middle === middle && p.en === en);
     expect(has("angry", "frustrated", "What did you need that you didn't get?")).toBe(true);
     expect(has("happy", "proud", "What did you do that made this possible?")).toBe(true);
-    expect(has("fearful", "anxious", "What's the worst case, and how likely is it really?")).toBe(true);
+    expect(has("fearful", "anxious", "What's the worst case, and how likely is it really?")).toBe(
+      true,
+    );
     expect(has("bad", "tired", "What drained you today, and what could refill you?")).toBe(true);
   });
 
@@ -92,7 +97,13 @@ describe("pickPrompt", () => {
   const zero = () => 0;
 
   it("prefers matching core and middle", () => {
-    const p = pickPrompt({ core: "angry", middle: "frustrated", today: TODAY, history: [], random: zero });
+    const p = pickPrompt({
+      core: "angry",
+      middle: "frustrated",
+      today: TODAY,
+      history: [],
+      random: zero,
+    });
     expect(p.category).toBe("angry");
     expect(p.middle).toBe("frustrated");
   });
@@ -112,7 +123,9 @@ describe("pickPrompt", () => {
       const p = pickPrompt({ today: TODAY, history: [], random: () => i / 20 });
       expect(p.category).toBe("general");
     }
-    expect(pickPrompt({ core: null, today: TODAY, history: [], random: zero }).category).toBe("general");
+    expect(pickPrompt({ core: null, today: TODAY, history: [], random: zero }).category).toBe(
+      "general",
+    );
   });
 
   it("excludes prompts shown 13 days ago and allows 14 days ago", () => {
@@ -150,7 +163,13 @@ describe("pickPrompt", () => {
 
   it("falls back to general when all core prompts are recent", () => {
     const coreIds = ids((p) => p.category === "fearful");
-    const p = pickPrompt({ core: "fearful", middle: "anxious", today: TODAY, history: showAll(coreIds, 2), random: zero });
+    const p = pickPrompt({
+      core: "fearful",
+      middle: "anxious",
+      today: TODAY,
+      history: showAll(coreIds, 2),
+      random: zero,
+    });
     expect(p.category).toBe("general");
   });
 
@@ -194,7 +213,12 @@ describe("pickPrompt", () => {
       for (let i = 0; i < 10; i++) {
         const fresh = pickPrompt({ core, today: TODAY, history: [], random: () => i / 10 });
         expect(fresh.category).not.toBe("weekly");
-        const stale = pickPrompt({ core, today: TODAY, history: showAll(everything, 1), random: () => i / 10 });
+        const stale = pickPrompt({
+          core,
+          today: TODAY,
+          history: showAll(everything, 1),
+          random: () => i / 10,
+        });
         expect(stale.id).not.toBe(WEEKLY_REVIEW_PROMPT.id);
       }
     }

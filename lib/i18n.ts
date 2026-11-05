@@ -130,7 +130,8 @@ const en = {
     longest: "Longest",
     total: "Days written",
     freezes: "Rest days saved",
-    freezesHint: "A rest day covers a missed day so your streak keeps going. You earn one every 7 days, up to 3.",
+    freezesHint:
+      "A rest day covers a missed day so your streak keeps going. You earn one every 7 days, up to 3.",
     atRisk: "A gentle nudge: writing today keeps your streak going.",
     days: "{n} days",
     oneDay: "1 day",
@@ -198,7 +199,8 @@ const en = {
     exportWeek: "This week",
     exportMonth: "This month",
     reflect: "Reflect on my week",
-    reflectHint: "Sends this week's entries to Anthropic (Claude) to suggest gentle themes and questions. Nothing is sent unless you tap the button.",
+    reflectHint:
+      "Sends this week's entries to Anthropic (Claude) to suggest gentle themes and questions. Nothing is sent unless you tap the button.",
     reflectOff: "AI reflection is off. You can turn it on in Settings.",
     reflecting: "Reflecting",
     reflectionTitle: "Themes and questions",
@@ -286,7 +288,8 @@ const en = {
     pushOn: "Notifications are on for this device.",
     pushDenied: "Notifications are blocked in this browser's settings.",
     pushUnsupported: "This browser can't receive notifications.",
-    pushIos: "On iPhone and iPad, add the journal to your Home Screen first (Share, then Add to Home Screen), then open it from there.",
+    pushIos:
+      "On iPhone and iPad, add the journal to your Home Screen first (Share, then Add to Home Screen), then open it from there.",
     testPush: "Send a test notification",
     testSent: "Test sent.",
     features: "Optional features",
@@ -294,7 +297,8 @@ const en = {
     transcriptionHint: "Sends audio to OpenAI Whisper for a transcript.",
     transcriptionUnavailable: "Needs OPENAI_API_KEY on the server.",
     aiReflection: "AI weekly reflection",
-    aiReflectionHint: "Lets you send a week of entries to Anthropic (Claude) when you tap Reflect. Never automatic.",
+    aiReflectionHint:
+      "Lets you send a week of entries to Anthropic (Claude) when you tap Reflect. Never automatic.",
     aiUnavailable: "Needs ANTHROPIC_API_KEY on the server.",
     data: "Your data",
     exportMarkdown: "Download Markdown (zip)",
@@ -364,7 +368,11 @@ const en = {
 export type Dict = typeof en;
 
 type DeepStringify<T> = {
-  [K in keyof T]: T[K] extends string ? string : T[K] extends string[] ? string[] : DeepStringify<T[K]>;
+  [K in keyof T]: T[K] extends string
+    ? string
+    : T[K] extends string[]
+      ? string[]
+      : DeepStringify<T[K]>;
 };
 
 const ar: DeepStringify<Dict> = {
@@ -561,7 +569,8 @@ const ar: DeepStringify<Dict> = {
     exportWeek: "هذا الأسبوع",
     exportMonth: "هذا الشهر",
     reflect: "تأمّل أسبوعي",
-    reflectHint: "يرسل تدوينات هذا الأسبوع إلى Anthropic (Claude) لاقتراح محاور وأسئلة لطيفة. لا يُرسل شيء إلا إذا ضغطت الزر.",
+    reflectHint:
+      "يرسل تدوينات هذا الأسبوع إلى Anthropic (Claude) لاقتراح محاور وأسئلة لطيفة. لا يُرسل شيء إلا إذا ضغطت الزر.",
     reflectOff: "التأمل بالذكاء الاصطناعي متوقف. يمكنك تشغيله من الإعدادات.",
     reflecting: "جارٍ التأمل",
     reflectionTitle: "محاور وأسئلة",
@@ -649,7 +658,8 @@ const ar: DeepStringify<Dict> = {
     pushOn: "الإشعارات مفعّلة على هذا الجهاز.",
     pushDenied: "الإشعارات محظورة في إعدادات هذا المتصفح.",
     pushUnsupported: "هذا المتصفح لا يستقبل الإشعارات.",
-    pushIos: "على iPhone وiPad، أضف اليوميات إلى الشاشة الرئيسية أولًا (مشاركة، ثم إضافة إلى الشاشة الرئيسية)، ثم افتحها من هناك.",
+    pushIos:
+      "على iPhone وiPad، أضف اليوميات إلى الشاشة الرئيسية أولًا (مشاركة، ثم إضافة إلى الشاشة الرئيسية)، ثم افتحها من هناك.",
     testPush: "أرسل إشعارًا تجريبيًا",
     testSent: "تم الإرسال.",
     features: "ميزات اختيارية",
@@ -657,7 +667,8 @@ const ar: DeepStringify<Dict> = {
     transcriptionHint: "يرسل الصوت إلى OpenAI Whisper لتفريغه نصًا.",
     transcriptionUnavailable: "يتطلب OPENAI_API_KEY على الخادم.",
     aiReflection: "التأمل الأسبوعي بالذكاء الاصطناعي",
-    aiReflectionHint: "يتيح لك إرسال تدوينات الأسبوع إلى Anthropic (Claude) حين تضغط تأمّل. ليس تلقائيًا أبدًا.",
+    aiReflectionHint:
+      "يتيح لك إرسال تدوينات الأسبوع إلى Anthropic (Claude) حين تضغط تأمّل. ليس تلقائيًا أبدًا.",
     aiUnavailable: "يتطلب ANTHROPIC_API_KEY على الخادم.",
     data: "بياناتك",
     exportMarkdown: "تنزيل Markdown (ملف مضغوط)",

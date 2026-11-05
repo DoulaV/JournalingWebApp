@@ -20,7 +20,11 @@ export async function GET(req: NextRequest) {
   for (const p of profiles ?? []) {
     const today = localDate(now, p.timezone);
     const [{ count: wrote }, { data: letters }] = await Promise.all([
-      admin.from("entries").select("id", { count: "exact", head: true }).eq("user_id", p.user_id).eq("entry_date", today),
+      admin
+        .from("entries")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", p.user_id)
+        .eq("entry_date", today),
       admin
         .from("future_letters")
         .select("id")
@@ -41,7 +45,11 @@ export async function GET(req: NextRequest) {
         morningReminderEnabled: p.morning_reminder_enabled,
         morningReminderTime: p.morning_reminder_time.slice(0, 5),
       },
-      sent: { sentOn: p.notifications_sent_on, sentCount: p.notifications_sent_count, sentKinds: p.notifications_sent_kinds },
+      sent: {
+        sentOn: p.notifications_sent_on,
+        sentCount: p.notifications_sent_count,
+        sentKinds: p.notifications_sent_kinds,
+      },
       wroteToday: (wrote ?? 0) > 0,
       letterReady: (letters ?? []).length > 0,
     });
@@ -90,5 +98,9 @@ export async function GET(req: NextRequest) {
     }
     results.push({ user: p.user_id, kind: decision.kind, sent });
   }
-  return NextResponse.json({ ok: true, ranAt: now.toISOString(), results: results.map(({ kind, sent }) => ({ kind, sent })) });
+  return NextResponse.json({
+    ok: true,
+    ranAt: now.toISOString(),
+    results: results.map(({ kind, sent }) => ({ kind, sent })),
+  });
 }

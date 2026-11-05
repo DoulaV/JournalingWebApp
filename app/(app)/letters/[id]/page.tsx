@@ -17,16 +17,24 @@ export default async function LetterPage({ params }: { params: Promise<{ id: str
   if (!letter) notFound();
   return (
     <article className="animate-bloom space-y-4">
-      <Link href="/letters" className="text-sm text-muted">
-        <span aria-hidden className="inline-block rtl:rotate-180">←</span> {t.letters.title}
+      <Link href="/letters" className="text-muted text-sm">
+        <span aria-hidden className="inline-block rtl:rotate-180">
+          ←
+        </span>{" "}
+        {t.letters.title}
       </Link>
-      <p className="text-sm text-muted">{formatDate(letter.createdAt.slice(0, 10), profile.language, { year: "numeric" })}</p>
+      <p className="text-muted text-sm">
+        {formatDate(letter.createdAt.slice(0, 10), profile.language, { year: "numeric" })}
+      </p>
       {letter.title && (
         <h1 className="font-serif text-3xl font-semibold" dir="auto">
           {letter.title}
         </h1>
       )}
-      <div className="entry-prose whitespace-pre-wrap rounded-2xl border border-border bg-surface p-6" dir="auto">
+      <div
+        className="entry-prose border-border bg-surface rounded-2xl border p-6 whitespace-pre-wrap"
+        dir="auto"
+      >
         {letter.body}
       </div>
     </article>

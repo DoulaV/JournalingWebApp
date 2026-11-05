@@ -49,7 +49,13 @@ function inWindow(minutes: number, at: string, width: number): boolean {
   return minutes >= start && minutes < start + width;
 }
 
-export function decideNotification({ now, settings, sent, wroteToday, letterReady }: DecideInput): Decision | null {
+export function decideNotification({
+  now,
+  settings,
+  sent,
+  wroteToday,
+  letterReady,
+}: DecideInput): Decision | null {
   const today = localDate(now, settings.timeZone);
   const minutes = localMinutes(now, settings.timeZone);
   const sameDay = sent.sentOn === today;
@@ -73,7 +79,11 @@ export function decideNotification({ now, settings, sent, wroteToday, letterRead
   ) {
     return pick("morning");
   }
-  if (settings.remindersEnabled && !kinds.has("reminder") && inWindow(minutes, settings.reminderTime, WINDOWS.reminder)) {
+  if (
+    settings.remindersEnabled &&
+    !kinds.has("reminder") &&
+    inWindow(minutes, settings.reminderTime, WINDOWS.reminder)
+  ) {
     return pick("reminder");
   }
   if (

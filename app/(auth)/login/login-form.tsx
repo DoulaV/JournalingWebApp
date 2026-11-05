@@ -30,7 +30,7 @@ export function LoginForm({ t }: { t: Dict["login"] }) {
 
   if (state.status === "sent") {
     return (
-      <p role="status" className="rounded-2xl border border-border bg-surface p-5">
+      <p role="status" className="border-border bg-surface rounded-2xl border p-5">
         {t.sent}
       </p>
     );
@@ -50,27 +50,33 @@ export function LoginForm({ t }: { t: Dict["login"] }) {
           autoComplete="email webauthn"
           inputMode="email"
           dir="ltr"
-          className="block min-h-12 w-full rounded-xl border border-border bg-surface px-4 text-base"
+          className="border-border bg-surface block min-h-12 w-full rounded-xl border px-4 text-base"
         />
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? t.sending : t.sendLink}
         </Button>
         {state.status === "error" && (
-          <p role="alert" className="text-sm text-danger">
+          <p role="alert" className="text-danger text-sm">
             {t.failed}
           </p>
         )}
       </form>
-      <div className="flex items-center gap-3 text-sm text-muted">
-        <span className="h-px flex-1 bg-border" />
+      <div className="text-muted flex items-center gap-3 text-sm">
+        <span className="bg-border h-px flex-1" />
         {t.or}
-        <span className="h-px flex-1 bg-border" />
+        <span className="bg-border h-px flex-1" />
       </div>
-      <Button variant="secondary" size="lg" className="w-full" onClick={passkey} disabled={passkeyBusy}>
+      <Button
+        variant="secondary"
+        size="lg"
+        className="w-full"
+        onClick={passkey}
+        disabled={passkeyBusy}
+      >
         {t.passkey}
       </Button>
       {passkeyError && (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="text-danger text-sm">
           {t.failed}
         </p>
       )}

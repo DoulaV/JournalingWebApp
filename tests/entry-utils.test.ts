@@ -30,8 +30,19 @@ describe("entry utils", () => {
       content: [
         { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Evening" }] },
         { type: "paragraph", content: [{ type: "text", text: "bold", marks: [{ type: "bold" }] }] },
-        { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "a" }] }] }] },
-        { type: "blockquote", content: [{ type: "paragraph", content: [{ type: "text", text: "q" }] }] },
+        {
+          type: "bulletList",
+          content: [
+            {
+              type: "listItem",
+              content: [{ type: "paragraph", content: [{ type: "text", text: "a" }] }],
+            },
+          ],
+        },
+        {
+          type: "blockquote",
+          content: [{ type: "paragraph", content: [{ type: "text", text: "q" }] }],
+        },
       ],
     };
     expect(docToMarkdown(rich)).toBe("## Evening\n\n**bold**\n\n- a\n\n> q");

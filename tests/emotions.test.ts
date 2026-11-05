@@ -128,7 +128,10 @@ describe("labels and keys", () => {
   const full: EmotionPath = { core: "angry", middle: "frustrated", precise: "annoyed" };
 
   it("builds breadcrumbs", () => {
-    expect(breadcrumb({ core: "angry", middle: "frustrated" }, "en")).toEqual(["Angry", "Frustrated"]);
+    expect(breadcrumb({ core: "angry", middle: "frustrated" }, "en")).toEqual([
+      "Angry",
+      "Frustrated",
+    ]);
     expect(breadcrumb(full, "en")).toEqual(["Angry", "Frustrated", "Annoyed"]);
     expect(breadcrumb({ core: "happy" }, "ar")).toEqual(["سعيد"]);
     expect(breadcrumb(full, "ar")).toHaveLength(3);

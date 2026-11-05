@@ -17,7 +17,12 @@ export async function subscribePushAction(sub: unknown, deviceLabel: string) {
   const parsed = subSchema.parse(sub);
   const supabase = await serverClient();
   const { error } = await supabase.from("push_subscriptions").upsert(
-    { user_id: user.id, endpoint: parsed.endpoint, keys: parsed.keys, device_label: deviceLabel.slice(0, 80) },
+    {
+      user_id: user.id,
+      endpoint: parsed.endpoint,
+      keys: parsed.keys,
+      device_label: deviceLabel.slice(0, 80),
+    },
     { onConflict: "endpoint" },
   );
   if (error) throw new Error(error.message);
@@ -35,6 +40,11 @@ export async function testPushAction() {
   const profile = await getProfileRow();
   const t = getDict(profile.language === "ar" ? "ar" : "en");
   const supabase = await serverClient();
-  const sent = await sendToUser(supabase, user.id, { title: t.appName, body: t.notifications.test, url: "/today", tag: "test" });
+  const sent = await sendToUser(supabase, user.id, {
+    title: t.appName,
+    body: t.notifications.test,
+    url: "/today",
+    tag: "test",
+  });
   return { sent };
 }

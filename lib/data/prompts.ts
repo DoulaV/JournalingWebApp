@@ -11,7 +11,9 @@ import { getPrompt, pickPrompt, NO_REPEAT_DAYS, type Prompt } from "@/lib/prompt
  * prompt_history and reused, so refreshing the page doesn't reshuffle it.
  * Chosen from the first feeling of today's entry, never repeating within 14 days.
  */
-export async function promptForToday(opts: { skipId?: string | null; forceNew?: boolean } = {}): Promise<Prompt | null> {
+export async function promptForToday(
+  opts: { skipId?: string | null; forceNew?: boolean } = {},
+): Promise<Prompt | null> {
   const user = await requireUser();
   const profile = await getProfileRow();
   if (!profile.show_prompts) return null;
@@ -38,7 +40,10 @@ export async function promptForToday(opts: { skipId?: string | null; forceNew?: 
 
   await supabase
     .from("prompt_history")
-    .upsert({ user_id: user.id, prompt_id: prompt.id, shown_on: today }, { onConflict: "user_id,prompt_id,shown_on", ignoreDuplicates: true });
+    .upsert(
+      { user_id: user.id, prompt_id: prompt.id, shown_on: today },
+      { onConflict: "user_id,prompt_id,shown_on", ignoreDuplicates: true },
+    );
   return prompt;
 }
 

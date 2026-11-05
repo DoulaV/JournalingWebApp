@@ -31,23 +31,34 @@ export function Celebration({ milestone, lang }: { milestone: number; lang: Lang
       ref={ref}
       onCancel={close}
       aria-labelledby="celebrate-title"
-      className="m-auto w-[min(26rem,calc(100%-2rem))] rounded-3xl border border-border bg-surface p-8 text-center text-text backdrop:bg-black/30"
+      className="border-border bg-surface text-text m-auto w-[min(26rem,calc(100%-2rem))] rounded-3xl border p-8 text-center backdrop:bg-black/30"
     >
-      <div aria-hidden className="animate-bloom animate-halo mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-accent-soft font-serif text-3xl">
+      <div
+        aria-hidden
+        className="animate-bloom animate-halo bg-accent-soft mx-auto mb-6 flex size-20 items-center justify-center rounded-full font-serif text-3xl"
+      >
         {milestone}
       </div>
       <h2 id="celebrate-title" className="font-serif text-2xl font-semibold">
         {fmt(t.rewards.celebrate, { n: milestone })}
       </h2>
-      <p className="mt-2 text-muted">{fmt(t.streak.milestone, { n: milestone })}</p>
-      {reward && <p className="mt-4">{fmt(t.rewards.celebrateBody, { reward: rewardLabel(reward.id, t.rewards) })}</p>}
+      <p className="text-muted mt-2">{fmt(t.streak.milestone, { n: milestone })}</p>
+      {reward && (
+        <p className="mt-4">
+          {fmt(t.rewards.celebrateBody, { reward: rewardLabel(reward.id, t.rewards) })}
+        </p>
+      )}
       <div className="mt-6 flex flex-col gap-2">
         {reward && (
           <Link href={reward.href} onClick={close} className={buttonClass("primary", "lg")}>
             {rewardLabel(reward.id, t.rewards)}
           </Link>
         )}
-        <button type="button" onClick={close} className={buttonClass(reward ? "ghost" : "primary", "lg")}>
+        <button
+          type="button"
+          onClick={close}
+          className={buttonClass(reward ? "ghost" : "primary", "lg")}
+        >
           {t.common.close}
         </button>
       </div>

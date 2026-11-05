@@ -28,7 +28,9 @@ test.describe("insights and rewards", () => {
     await expect(page.getByText("Your monthly recap unlocks after a 30-day streak.")).toBeVisible();
     await page.getByText("Show as table").click();
     await expect(page.getByRole("table")).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
+    ).toBe(false);
   });
 
   test("a 7-day milestone is celebrated calmly and unlocks a theme", async ({ page }) => {
@@ -54,7 +56,9 @@ test.describe("insights and rewards", () => {
     await expect(page.locator("html")).toHaveAttribute("data-palette", "dusk");
   });
 
-  test("monthly recap and letters unlock with a long streak, letters stay sealed", async ({ page }) => {
+  test("monthly recap and letters unlock with a long streak, letters stay sealed", async ({
+    page,
+  }) => {
     const userId = await resetUserData();
     await seedEntries(userId, history(55));
     await page.goto("/insights");
@@ -70,7 +74,10 @@ test.describe("insights and rewards", () => {
     await expect(page.getByText("Dear future me")).toHaveCount(0);
 
     // Time passes: the letter's date arrives and it can be opened.
-    await admin().from("future_letters").update({ sealed_until: dubaiToday() }).eq("user_id", userId);
+    await admin()
+      .from("future_letters")
+      .update({ sealed_until: dubaiToday() })
+      .eq("user_id", userId);
     await page.goto("/today");
     await expect(page.getByText("A letter from your past self is ready to open.")).toBeVisible();
     await page.getByRole("link", { name: "Open letter" }).click();
@@ -84,7 +91,11 @@ test.describe("insights and rewards", () => {
     await page.goto("/milestones");
     await expect(page.getByRole("heading", { name: "Look how far you've come" })).toBeVisible();
     await expect(page.getByText("Day one")).toBeVisible();
-    await expect(page.getByText("Dinner with family on day 2.").or(page.getByText("Work deadline stress on day 1."))).toBeVisible();
+    await expect(
+      page
+        .getByText("Dinner with family on day 2.")
+        .or(page.getByText("Work deadline stress on day 1.")),
+    ).toBeVisible();
   });
 
   test("therapy summary prints only the excerpts I choose", async ({ page }) => {
@@ -92,10 +103,15 @@ test.describe("insights and rewards", () => {
     await seedEntries(userId, history(3, 0));
     await page.goto("/print/summary?period=week");
     await expect(page.getByTestId("summary")).toContainText("Feelings and intensity");
-    const first = page.locator("li").filter({ has: page.locator('input[type="checkbox"]') }).first();
+    const first = page
+      .locator("li")
+      .filter({ has: page.locator('input[type="checkbox"]') })
+      .first();
     await first.locator('input[type="checkbox"]').check();
     await page.emulateMedia({ media: "print" });
-    const visible = page.locator("li:visible").filter({ has: page.locator('input[type="checkbox"]') });
+    const visible = page
+      .locator("li:visible")
+      .filter({ has: page.locator('input[type="checkbox"]') });
     await expect(visible).toHaveCount(1);
   });
 });

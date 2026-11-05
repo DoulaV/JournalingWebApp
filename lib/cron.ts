@@ -9,5 +9,8 @@ export function isAuthorizedCron(req: NextRequest): boolean {
   if (!secret) return false;
   const header = req.headers.get("authorization") ?? "";
   const expected = `Bearer ${secret}`;
-  return header.length === expected.length && crypto.timingSafeEqual(Buffer.from(header), Buffer.from(expected));
+  return (
+    header.length === expected.length &&
+    crypto.timingSafeEqual(Buffer.from(header), Buffer.from(expected))
+  );
 }

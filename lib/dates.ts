@@ -73,7 +73,9 @@ export function addMonths(d: DateStr, n: number): DateStr {
   const m = Number(d.slice(5, 7)) - 1 + n;
   const day = Number(d.slice(8, 10));
   const target = new Date(Date.UTC(y, m, 1));
-  const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate();
+  const lastDay = new Date(
+    Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
+  ).getUTCDate();
   target.setUTCDate(Math.min(day, lastDay));
   return fromUtc(target.getTime());
 }
@@ -118,7 +120,11 @@ export function timeToMinutes(t: string): number {
   return (h || 0) * 60 + (m || 0);
 }
 
-export function formatDate(d: DateStr, lang: "en" | "ar", opts: Intl.DateTimeFormatOptions = {}): string {
+export function formatDate(
+  d: DateStr,
+  lang: "en" | "ar",
+  opts: Intl.DateTimeFormatOptions = {},
+): string {
   const locale = lang === "ar" ? "ar-AE" : "en-GB";
   return new Intl.DateTimeFormat(locale, {
     timeZone: "UTC",

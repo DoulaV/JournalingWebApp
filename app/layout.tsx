@@ -4,19 +4,22 @@ import "./globals.css";
 import { getPrefs } from "@/lib/data/prefs";
 import { dirFor } from "@/lib/i18n";
 
-const ui = Inter({ variable: "--font-ui", subsets: ["latin"], display: "swap" });
-const entry = Source_Serif_4({ variable: "--font-entry", subsets: ["latin"], display: "swap" });
+// "optional" avoids a late font swap; the fonts are cached after the first visit.
+const ui = Inter({ variable: "--font-ui", subsets: ["latin"], display: "optional" });
+const entry = Source_Serif_4({ variable: "--font-entry", subsets: ["latin"], display: "optional" });
 const entryAr = Noto_Naskh_Arabic({
   variable: "--font-entry-ar",
   subsets: ["arabic"],
   weight: ["400", "600"],
   display: "swap",
+  preload: false,
 });
 const uiAr = IBM_Plex_Sans_Arabic({
   variable: "--font-ui-ar",
   subsets: ["arabic"],
   weight: ["400", "500", "600"],
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

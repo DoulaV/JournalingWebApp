@@ -6,7 +6,17 @@ import type { Lang } from "@/lib/emotions";
 import { EmotionDots } from "@/components/ui/emotion-dots";
 import { firstLine } from "@/lib/data/entry-utils";
 
-export function OnThisDay({ entries, today, lang, t }: { entries: Entry[]; today: string; lang: Lang; t: Dict }) {
+export function OnThisDay({
+  entries,
+  today,
+  lang,
+  t,
+}: {
+  entries: Entry[];
+  today: string;
+  lang: Lang;
+  t: Dict;
+}) {
   const labels: [string, string][] = [
     [addDays(today, -7), t.today.weekAgo],
     [addMonths(today, -1), t.today.monthAgo],
@@ -19,14 +29,17 @@ export function OnThisDay({ entries, today, lang, t }: { entries: Entry[]; today
   if (!items.length) return null;
   return (
     <section aria-labelledby="otd-title" className="space-y-3">
-      <h2 id="otd-title" className="text-sm font-medium text-muted">
+      <h2 id="otd-title" className="text-muted text-sm font-medium">
         {t.today.onThisDay}
       </h2>
       <ul className="space-y-2">
         {items.map(({ label, entry }) => (
           <li key={entry.id}>
-            <Link href={`/entry/${entry.date}`} className="block rounded-2xl border border-border bg-surface p-4 hover:bg-surface-2">
-              <div className="flex items-center justify-between gap-2 text-sm text-muted">
+            <Link
+              href={`/entry/${entry.date}`}
+              className="border-border bg-surface hover:bg-surface-2 block rounded-2xl border p-4"
+            >
+              <div className="text-muted flex items-center justify-between gap-2 text-sm">
                 <span>
                   {label} · {formatDate(entry.date, lang, { weekday: undefined })}
                 </span>

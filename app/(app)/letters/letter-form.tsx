@@ -5,7 +5,15 @@ import type { Dict } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { createLetterAction } from "./actions";
 
-export function LetterForm({ t, minDate, defaultDate }: { t: Dict; minDate: string; defaultDate: string }) {
+export function LetterForm({
+  t,
+  minDate,
+  defaultDate,
+}: {
+  t: Dict;
+  minDate: string;
+  defaultDate: string;
+}) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -23,7 +31,7 @@ export function LetterForm({ t, minDate, defaultDate }: { t: Dict; minDate: stri
 
   return (
     <form
-      className="space-y-3 rounded-2xl border border-border bg-surface p-5"
+      className="border-border bg-surface space-y-3 rounded-2xl border p-5"
       onSubmit={async (e) => {
         e.preventDefault();
         setBusy(true);
@@ -40,7 +48,13 @@ export function LetterForm({ t, minDate, defaultDate }: { t: Dict; minDate: stri
       <label className="block text-sm font-medium" htmlFor="letter-title">
         {t.letters.letterTitle}
       </label>
-      <input id="letter-title" value={title} onChange={(e) => setTitle(e.target.value)} dir="auto" className="block min-h-11 w-full rounded-xl border border-border bg-surface px-3" />
+      <input
+        id="letter-title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        dir="auto"
+        className="border-border bg-surface block min-h-11 w-full rounded-xl border px-3"
+      />
       <label className="block text-sm font-medium" htmlFor="letter-body">
         {t.letters.body}
       </label>
@@ -52,14 +66,22 @@ export function LetterForm({ t, minDate, defaultDate }: { t: Dict; minDate: stri
         onChange={(e) => setBody(e.target.value)}
         placeholder={t.letters.bodyPlaceholder}
         dir="auto"
-        className="entry-prose block w-full rounded-xl border border-border bg-surface p-3"
+        className="entry-prose border-border bg-surface block w-full rounded-xl border p-3"
       />
       <label className="block text-sm font-medium" htmlFor="letter-date">
         {t.letters.openOn}
       </label>
-      <input id="letter-date" type="date" min={minDate} required value={date} onChange={(e) => setDate(e.target.value)} className="block min-h-11 rounded-xl border border-border bg-surface px-3" />
+      <input
+        id="letter-date"
+        type="date"
+        min={minDate}
+        required
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="border-border bg-surface block min-h-11 rounded-xl border px-3"
+      />
       {msg && (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="text-danger text-sm">
           {msg}
         </p>
       )}

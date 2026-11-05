@@ -9,20 +9,41 @@ import { RenderDoc } from "@/components/editor/render-doc";
 import { EntryEditor } from "@/components/editor/entry-editor";
 import { AttachmentList } from "@/components/attachments/attachment-bar";
 import { FeelingChips } from "../../today/today-client";
-import { Button } from "@/components/ui/button";
+import { Button, buttonClass } from "@/components/ui/button";
 import { deleteEntryAction } from "../../actions";
 
-export function EntryView({ entry, lang, t, fontSize }: { entry: Entry; lang: Lang; t: Dict; fontSize: number }) {
+export function EntryView({
+  entry,
+  lang,
+  t,
+  fontSize,
+}: {
+  entry: Entry;
+  lang: Lang;
+  t: Dict;
+  fontSize: number;
+}) {
   const [editing, setEditing] = useState(false);
   const router = useRouter();
 
   return (
     <article className="space-y-5">
-      <FeelingChips emotions={entry.emotions} valence={entry.moodValence} lang={lang} t={t} align="start" />
+      <FeelingChips
+        emotions={entry.emotions}
+        valence={entry.moodValence}
+        lang={lang}
+        t={t}
+        align="start"
+      />
       {editing ? (
         <EntryEditor
           date={entry.date}
-          initial={{ title: entry.title, body: entry.body, bodyText: entry.bodyText, updatedAt: entry.updatedAt }}
+          initial={{
+            title: entry.title,
+            body: entry.body,
+            bodyText: entry.bodyText,
+            updatedAt: entry.updatedAt,
+          }}
           t={t}
           fontSize={fontSize}
           onSaved={() => router.refresh()}
@@ -40,10 +61,13 @@ export function EntryView({ entry, lang, t, fontSize }: { entry: Entry; lang: La
         </div>
       )}
       {entry.attachments.length > 0 && <AttachmentList items={entry.attachments} t={t} />}
-      <div className="no-print flex gap-2 border-t border-border pt-4">
+      <div className="no-print border-border flex gap-2 border-t pt-4">
         <Button variant="secondary" onClick={() => setEditing((e) => !e)}>
           {editing ? t.common.done : t.common.edit}
         </Button>
+        <a href={`/print?date=${entry.date}`} className={buttonClass("secondary", "md")}>
+          PDF
+        </a>
         <Button
           variant="danger"
           onClick={async () => {
