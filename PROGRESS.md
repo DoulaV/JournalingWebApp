@@ -34,11 +34,16 @@ Source of truth for the build is `CLAUDE.md`. This file tracks what is done.
 - Known issues: headless Chromium can't create real push subscriptions, so delivery to a real phone is verified only after deploy (the Settings page has "Send a test notification"). Vercel Hobby only runs daily crons, so the 15-minute reminder schedule runs from GitHub Actions (`.github/workflows/reminders.yml`).
 
 ## Phase 3: Looking back
-- [ ] Calendar view colored by emotion
-- [ ] Year heatmap
-- [ ] On this day
-- [ ] Full-text search with filters
-- [ ] Photos and voice notes (transcription behind flag)
+- [x] Calendar view colored by emotion
+- [x] Year heatmap
+- [x] On this day
+- [x] Full-text search with filters
+- [x] Photos and voice notes (transcription behind flag)
+
+### Phase 3 summary
+- Built: month calendar colored by each day's strongest feeling (shaded by intensity), year heatmap laid out month by month so it fits a phone without horizontal scroll, on this day (1 week, 1 month, 6 months, 1 year), full-text search (Postgres `simple` config, works for Arabic and English, plus substring fallback) with tag, feeling, date range, photo and audio filters, photo upload with client-side compression and voice notes recorded in the browser, stored in a private bucket and served by signed URLs. Whisper transcription runs only when the user turns it on and `OPENAI_API_KEY` is set.
+- Tested: unit tests for dominant feeling, colors, pleasantness, trends, triggers, weekday pattern and recap. Playwright at 390px: calendar color, heatmap, on this day, English and Arabic search with filters, photo upload and a voice note with a fake microphone, attachment filters.
+- Known issues: transcription is not exercised in tests (needs a real OpenAI key).
 
 ## Phase 4: Insights and rewards
 - [ ] Emotion trends, triggers, day-of-week charts
