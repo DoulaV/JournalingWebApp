@@ -1,0 +1,1 @@
+-- Local seed data. The app syncs ALLOWED_EMAIL into private.allowed_emails at sign-in.
